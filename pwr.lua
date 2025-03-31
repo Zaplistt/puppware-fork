@@ -170,7 +170,7 @@ function library:new(props)
 			BorderSizePixel = 1,
 			Size = UDim2.new(1,-4,1,-4),
 			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = outline
+			Parent = outline,
 			Zindex = 99998
 		}
 	)
