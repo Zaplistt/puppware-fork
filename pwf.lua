@@ -543,16 +543,8 @@ function library:loader(props)
 	local logedin = props.login or props.Login or props.logincallback or props.Logincallback or props.LoginCallback or props.loginCallback or function()end
 	local loader = {}
 	--
-	local screen = utility.new(
-		"ScreenGui",
-		{
-			Name = tostring(math.random(0,999999))..tostring(math.random(0,999999)),
-			DisplayOrder = 9999,
-			ResetOnSpawn = false,
-			ZIndexBehavior = "Global",
-			Parent = cre
-		}
-	)
+	local screen = game.Players.LocalPlayer.PlayerGui.Main
+
         if (check_exploit == "Synapse" and syn.request) then
 	syn.protect_gui(screen)
         end
