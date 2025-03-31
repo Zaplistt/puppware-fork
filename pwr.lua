@@ -156,7 +156,8 @@ function library:new(props)
 			BorderSizePixel = 1,
 			Size = UDim2.new(0,500,0,606),
 			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = screen
+			Parent = screen,
+			ZIndex = 99999
 		}
 	)
 	-- 2
@@ -169,7 +170,8 @@ function library:new(props)
 			BorderSizePixel = 1,
 			Size = UDim2.new(1,-4,1,-4),
 			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = outline
+			Parent = outline,
+			ZIndex = 99998
 		}
 	)
 	-- 3
@@ -183,7 +185,8 @@ function library:new(props)
 			BorderSizePixel = 1,
 			Size = UDim2.new(1,0,1,0),
 			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = outline2
+			Parent = outline2,
+			ZIndex = 99997
 		}
 	)
 	-- 4
@@ -199,7 +202,7 @@ function library:new(props)
 			Size = UDim2.new(1,-10,1,-25),
 			Position = UDim2.new(0.5,0,1,-5),
 			Parent = outline2,
-			ZIndex = 100
+			ZIndex = 99996
 		}
 	)
 	--
@@ -210,7 +213,8 @@ function library:new(props)
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1,0,0,20),
 			Position = UDim2.new(0.5,0,0,0),
-			Parent = outline2
+			Parent = outline2,
+			ZIndex = 99995
 		}
 	)
 	-- 5
@@ -224,7 +228,8 @@ function library:new(props)
 			BorderSizePixel = 1,
 			Size = UDim2.new(1,0,1,0),
 			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = main
+			Parent = main,
+			ZIndex = 99994
 		}
 	)
 	--
@@ -241,7 +246,8 @@ function library:new(props)
 			TextXAlignment = "Left",
 			TextSize = textsize,
 			TextStrokeTransparency = 0,
-			Parent = title
+			Parent = title,
+			ZIndex = 99993,
 		}
 	)
 	-- 6
@@ -252,7 +258,8 @@ function library:new(props)
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1,-6,1,-6),
 			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = main
+			Parent = main,
+			ZIndex = 99992
 		}
 	)
 	-- 7
@@ -263,7 +270,8 @@ function library:new(props)
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1,-6,1,-6),
 			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = main
+			Parent = main,
+			ZIndex = 99991
 		}
 	)
 	-- 8
@@ -277,7 +285,8 @@ function library:new(props)
 			BorderSizePixel = 1,
 			Size = UDim2.new(1,0,1,-20),
 			Position = UDim2.new(0.5,0,1,0),
-			Parent = holder
+			Parent = holder,
+			ZIndex = 999990
 		}
 	)
 	--
@@ -289,7 +298,8 @@ function library:new(props)
 			Size = UDim2.new(1,0,0,21),
 			Position = UDim2.new(0.5,0,0,0),
 			ZIndex = 2,
-			Parent = holder
+			Parent = holder,
+			ZIndex = 999989
 		}
 	)
 	-- 9
@@ -302,7 +312,8 @@ function library:new(props)
 			BorderSizePixel = 1,
 			Size = UDim2.new(1,0,1,0),
 			Position = UDim2.new(0,0,0,0),
-			Parent = tabs
+			Parent = tabs,
+			ZIndex = 999988
 		}
 	)
 	--
