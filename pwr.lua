@@ -150,7 +150,6 @@ function library:new(props)
 	local outline = utility.new(
 		"Frame",
 		{
-			Name = "NWTF",
 			AnchorPoint = Vector2.new(0.5,0.5),
 			BackgroundColor3 = color,
 			BorderColor3 = Color3.fromRGB(12, 12, 12),
