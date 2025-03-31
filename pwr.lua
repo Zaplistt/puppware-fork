@@ -132,230 +132,219 @@ utility.removespaces = function(s)
 end
 -- // main
 function library:new(props)
-	-- // properties
-	local textsize = props.textsize or props.TextSize or props.textSize or props.Textsize or 12
-	local font = props.font or props.Font or "RobotoMono"
-	local name = props.name or props.Name or props.UiName or props.Uiname or props.uiName or props.username or props.Username or props.UserName or props.userName or "new ui"
-	local color = props.color or props.Color or props.mainColor or props.maincolor or props.MainColor or props.Maincolor or props.Accent or props.accent or Color3.fromRGB(225, 58, 81)
-	-- // variables
-	local window = {}
-	-- // main
-	local screen = game.Players.LocalPlayer.PlayerGui.Main
-	screen.ZIndexBehavior = "Global",
-	--
-        if (check_exploit == "Synapse" and syn.request) then
-	syn.protect_gui(screen)
-        end
-	-- 1
-	local outline = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundColor3 = color,
-			BorderColor3 = Color3.fromRGB(12, 12, 12),
-			BorderSizePixel = 1,
-			Size = UDim2.new(0,500,0,606),
-			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = screen,
-			ZIndex = 9999
-		}
-	)
-	-- 2
-	local outline2 = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-			BorderColor3 = Color3.fromRGB(12, 12, 12),
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,-4,1,-4),
-			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = outline,
-			ZIndex = 9998
-		}
-	)
-	-- 3
-	local indent = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-			BorderColor3 = Color3.fromRGB(56, 56, 56),
-			BorderMode = "Inset",
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,0,1,0),
-			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = outline2,
-			ZIndex = 9997
-		}
-	)
-	-- 4
-	local main = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,1),
-			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-			BorderColor3 = Color3.fromRGB(56, 56, 56),
-			BorderMode = "Inset",
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,-10,1,-25),
-			Position = UDim2.new(0.5,0,1,-5),
-			Parent = outline2,
-			ZIndex = 9996
-		}
-	)
-	--
-	local title = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,0,0,20),
-			Position = UDim2.new(0.5,0,0,0),
-			Parent = outline2,
-			ZIndex = 9995
-		}
-	)
-	-- 5
-	local outline3 = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundColor3 = Color3.fromRGB(24, 24, 24),
-			BorderColor3 = Color3.fromRGB(12, 12, 12),
-			BorderMode = "Inset",
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,0,1,0),
-			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = main,
-			ZIndex = 9994
-		}
-	)
-	--
-	local titletext = utility.new(
-		"TextLabel",
-		{
-			AnchorPoint = Vector2.new(0.5,0),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,-10,1,0),
-			Position = UDim2.new(0.5,0,0,0),
-			Font = font,
-			Text = name,
-			TextColor3 = Color3.fromRGB(255,255,255),
-			TextXAlignment = "Left",
-			TextSize = textsize,
-			TextStrokeTransparency = 0,
-			Parent = title,
-			ZIndex = 9993,
-		}
-	)
-	-- 6
-	local holder = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,-6,1,-6),
-			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = main,
-			ZIndex = 9992
-		}
-	)
-	-- 7
-	local holder = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0.5),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,-6,1,-6),
-			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = main,
-			ZIndex = 9991
-		}
-	)
-	-- 8
-	local tabs = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,1),
-			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-			BorderColor3 = Color3.fromRGB(12, 12, 12),
-			BorderMode = "Inset",
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,0,1,-20),
-			Position = UDim2.new(0.5,0,1,0),
-			Parent = holder,
-			ZIndex = 9990
-		}
-	)
-	--
-	local tabsbuttons = utility.new(
-		"Frame",
-		{
-			AnchorPoint = Vector2.new(0.5,0),
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1,0,0,21),
-			Position = UDim2.new(0.5,0,0,0),
-			ZIndex = 2,
-			Parent = holder,
-			ZIndex = 9989
-		}
-	)
-	-- 9
-	local outline4 = utility.new(
-		"Frame",
-		{
-			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-			BorderColor3 = Color3.fromRGB(56, 56, 56),
-			BorderMode = "Inset",
-			BorderSizePixel = 1,
-			Size = UDim2.new(1,0,1,0),
-			Position = UDim2.new(0,0,0,0),
-			Parent = tabs,
-			ZIndex = 9988
-		}
-	)
-	--
-	utility.new(
-		"UIListLayout",
-		{
-			FillDirection = "Horizontal",
-			Padding = UDim.new(0,2),
-			Parent = tabsbuttons
-		}
-	)
-	--
-	utility.dragify(title,outline)
-	-- // window tbl
-	window = {
-		["screen"] = screen,
-		["holder"] = holder,
-		["labels"] = {},
-		["tabs"] = outline4,
-		["tabsbuttons"] = tabsbuttons,
-		["outline"] = outline,
-		["pages"] = {},
-		["pointers"] = {},
-		["dropdowns"] = {},
-		["multiboxes"] = {},
-		["buttonboxs"] = {},
-		["colorpickers"] = {},
-		["x"] = true,
-		["y"] = true,
-		["key"] = Enum.KeyCode.RightAlt,
-		["textsize"] = textsize,
-		["font"] = font,
-		["theme"] = {
-			["accent"] = color
-		},
-		["themeitems"] = {
-			["accent"] = {
-				["BackgroundColor3"] = {},
-				["BorderColor3"] = {},
-				["TextColor3"] = {}
-			}
-		}
-	}
+    -- // properties
+    local textsize = props.textsize or props.TextSize or props.textSize or props.Textsize or 12
+    local font = props.font or props.Font or "RobotoMono"
+    local name = props.name or props.Name or props.UiName or props.Uiname or props.uiName or props.username or props.Username or props.UserName or props.userName or "new ui"
+    local color = props.color or props.Color or props.mainColor or props.maincolor or props.MainColor or props.Maincolor or props.Accent or props.accent or Color3.fromRGB(225, 58, 81)
+    -- // variables
+    local window = {}
+    -- // main
+    local screen = game.Players.LocalPlayer.PlayerGui.Main
+
+    if (check_exploit == "Synapse" and syn.request) then
+        syn.protect_gui(screen)
+    end
+
+    -- Main container (highest level)
+    local outline = utility.new(
+        "Frame",
+        {
+            AnchorPoint = Vector2.new(0.5,0.5),
+            BackgroundColor3 = color,
+            BorderColor3 = Color3.fromRGB(12, 12, 12),
+            BorderSizePixel = 1,
+            Size = UDim2.new(0,500,0,606),
+            Position = UDim2.new(0.5,0,0.5,0),
+            Parent = screen,
+            ZIndex = 100  -- Base ZIndex
+        }
+    )
+
+    -- Secondary outline
+    local outline2 = utility.new(
+        "Frame",
+        {
+            AnchorPoint = Vector2.new(0.5,0.5),
+            BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+            BorderColor3 = Color3.fromRGB(12, 12, 12),
+            BorderSizePixel = 1,
+            Size = UDim2.new(1,-4,1,-4),
+            Position = UDim2.new(0.5,0,0.5,0),
+            Parent = outline,
+            ZIndex = 101  -- +1 from parent
+        }
+    )
+
+    -- Indent frame
+    local indent = utility.new(
+        "Frame",
+        {
+            AnchorPoint = Vector2.new(0.5,0.5),
+            BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+            BorderColor3 = Color3.fromRGB(56, 56, 56),
+            BorderMode = "Inset",
+            BorderSizePixel = 1,
+            Size = UDim2.new(1,0,1,0),
+            Position = UDim2.new(0.5,0,0.5,0),
+            Parent = outline2,
+            ZIndex = 102  -- +1 from parent
+        }
+    )
+
+    -- Main content area
+    local main = utility.new(
+        "Frame",
+        {
+            Name = "NWTF",
+            AnchorPoint = Vector2.new(0.5,1),
+            BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+            BorderColor3 = Color3.fromRGB(56, 56, 56),
+            BorderMode = "Inset",
+            BorderSizePixel = 1,
+            Size = UDim2.new(1,-10,1,-25),
+            Position = UDim2.new(0.5,0,1,-5),
+            Parent = outline2,
+            ZIndex = 103  -- +1 from parent
+        }
+    )
+
+    -- Title bar
+    local title = utility.new(
+        "Frame",
+        {
+            AnchorPoint = Vector2.new(0.5,0),
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1,0,0,20),
+            Position = UDim2.new(0.5,0,0,0),
+            Parent = outline2,
+            ZIndex = 104  -- +1 from parent
+        }
+    )
+
+    -- Inner outline
+    local outline3 = utility.new(
+        "Frame",
+        {
+            AnchorPoint = Vector2.new(0.5,0.5),
+            BackgroundColor3 = Color3.fromRGB(24, 24, 24),
+            BorderColor3 = Color3.fromRGB(12, 12, 12),
+            BorderMode = "Inset",
+            BorderSizePixel = 1,
+            Size = UDim2.new(1,0,1,0),
+            Position = UDim2.new(0.5,0,0.5,0),
+            Parent = main,
+            ZIndex = 105  -- +1 from parent
+        }
+    )
+
+    -- Title text
+    local titletext = utility.new(
+        "TextLabel",
+        {
+            AnchorPoint = Vector2.new(0.5,0),
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1,-10,1,0),
+            Position = UDim2.new(0.5,0,0,0),
+            Font = font,
+            Text = name,
+            TextColor3 = Color3.fromRGB(255,255,255),
+            TextXAlignment = "Left",
+            TextSize = textsize,
+            TextStrokeTransparency = 0,
+            Parent = title,
+            ZIndex = 106  -- +1 from parent
+        }
+    )
+
+    -- Content holder
+    local holder = utility.new(
+        "Frame",
+        {
+            AnchorPoint = Vector2.new(0.5,0.5),
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1,-6,1,-6),
+            Position = UDim2.new(0.5,0,0.5,0),
+            Parent = main,
+            ZIndex = 107  -- +1 from parent
+        }
+    )
+
+    -- Tabs container
+    local tabs = utility.new(
+        "Frame",
+        {
+            AnchorPoint = Vector2.new(0.5,1),
+            BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+            BorderColor3 = Color3.fromRGB(12, 12, 12),
+            BorderMode = "Inset",
+            BorderSizePixel = 1,
+            Size = UDim2.new(1,0,1,-20),
+            Position = UDim2.new(0.5,0,1,0),
+            Parent = holder,
+            ZIndex = 108  -- +1 from parent
+        }
+    )
+
+    -- Tabs buttons
+    local tabsbuttons = utility.new(
+        "Frame",
+        {
+            AnchorPoint = Vector2.new(0.5,0),
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1,0,0,21),
+            Position = UDim2.new(0.5,0,0,0),
+            Parent = holder,
+            ZIndex = 109  -- +1 from parent
+        }
+    )
+
+    -- Tabs outline
+    local outline4 = utility.new(
+        "Frame",
+        {
+            BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+            BorderColor3 = Color3.fromRGB(56, 56, 56),
+            BorderMode = "Inset",
+            BorderSizePixel = 1,
+            Size = UDim2.new(1,0,1,0),
+            Position = UDim2.new(0,0,0,0),
+            Parent = tabs,
+            ZIndex = 110  -- +1 from parent
+        }
+    )
+
+    -- ... rest of your code ...
+
+    -- // window tbl
+    window = {
+        ["screen"] = screen,
+        ["holder"] = holder,
+        ["labels"] = {},
+        ["tabs"] = outline4,
+        ["tabsbuttons"] = tabsbuttons,
+        ["outline"] = outline,
+        ["pages"] = {},
+        ["pointers"] = {},
+        ["dropdowns"] = {},
+        ["multiboxes"] = {},
+        ["buttonboxs"] = {},
+        ["colorpickers"] = {},
+        ["x"] = true,
+        ["y"] = true,
+        ["key"] = Enum.KeyCode.RightShift,
+        ["textsize"] = textsize,
+        ["font"] = font,
+        ["theme"] = {
+            ["accent"] = color
+        },
+        ["themeitems"] = {
+            ["accent"] = {
+                ["BackgroundColor3"] = {},
+                ["BorderColor3"] = {},
+                ["TextColor3"] = {}
+            }
+        }
 	--
 	table.insert(window.themeitems["accent"]["BackgroundColor3"],outline)
 	--
