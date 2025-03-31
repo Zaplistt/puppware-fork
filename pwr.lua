@@ -157,7 +157,6 @@ function library:new(props)
             Size = UDim2.new(0,500,0,606),
             Position = UDim2.new(0.5,0,0.5,0),
             Parent = screen,
-            ZIndex = 100  -- Base ZIndex
         }
     )
 
@@ -172,7 +171,6 @@ function library:new(props)
             Size = UDim2.new(1,-4,1,-4),
             Position = UDim2.new(0.5,0,0.5,0),
             Parent = outline,
-            ZIndex = 101  -- +1 from parent
         }
     )
 
@@ -188,7 +186,6 @@ function library:new(props)
             Size = UDim2.new(1,0,1,0),
             Position = UDim2.new(0.5,0,0.5,0),
             Parent = outline2,
-            ZIndex = 102  -- +1 from parent
         }
     )
 
@@ -205,7 +202,6 @@ function library:new(props)
             Size = UDim2.new(1,-10,1,-25),
             Position = UDim2.new(0.5,0,1,-5),
             Parent = outline2,
-            ZIndex = 103  -- +1 from parent
         }
     )
 
@@ -218,7 +214,6 @@ function library:new(props)
             Size = UDim2.new(1,0,0,20),
             Position = UDim2.new(0.5,0,0,0),
             Parent = outline2,
-            ZIndex = 104  -- +1 from parent
         }
     )
 
@@ -234,7 +229,6 @@ function library:new(props)
             Size = UDim2.new(1,0,1,0),
             Position = UDim2.new(0.5,0,0.5,0),
             Parent = main,
-            ZIndex = 105  -- +1 from parent
         }
     )
 
@@ -253,7 +247,6 @@ function library:new(props)
             TextSize = textsize,
             TextStrokeTransparency = 0,
             Parent = title,
-            ZIndex = 106  -- +1 from parent
         }
     )
 
@@ -266,7 +259,6 @@ function library:new(props)
             Size = UDim2.new(1,-6,1,-6),
             Position = UDim2.new(0.5,0,0.5,0),
             Parent = main,
-            ZIndex = 107  -- +1 from parent
         }
     )
 
@@ -282,7 +274,6 @@ function library:new(props)
             Size = UDim2.new(1,0,1,-20),
             Position = UDim2.new(0.5,0,1,0),
             Parent = holder,
-            ZIndex = 108  -- +1 from parent
         }
     )
 
@@ -295,7 +286,6 @@ function library:new(props)
             Size = UDim2.new(1,0,0,21),
             Position = UDim2.new(0.5,0,0,0),
             Parent = holder,
-            ZIndex = 109  -- +1 from parent
         }
     )
 
@@ -310,11 +300,8 @@ function library:new(props)
             Size = UDim2.new(1,0,1,0),
             Position = UDim2.new(0,0,0,0),
             Parent = tabs,
-            ZIndex = 110  -- +1 from parent
         }
     )
-
-    -- ... rest of your code ...
 
     -- // window tbl
     window = {
