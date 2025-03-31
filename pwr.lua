@@ -141,7 +141,7 @@ function library:new(props)
 	local window = {}
 	-- // main
 	local screen = game.Players.LocalPlayer.PlayerGui.Main
-
+	screen.ZIndexBehavior = "Global",
 	--
         if (check_exploit == "Synapse" and syn.request) then
 	syn.protect_gui(screen)
