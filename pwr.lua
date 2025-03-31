@@ -157,7 +157,7 @@ function library:new(props)
 			Size = UDim2.new(0,500,0,606),
 			Position = UDim2.new(0.5,0,0.5,0),
 			Parent = screen,
-			ZIndex = 99999
+			ZIndex = 9999
 		}
 	)
 	-- 2
@@ -171,7 +171,7 @@ function library:new(props)
 			Size = UDim2.new(1,-4,1,-4),
 			Position = UDim2.new(0.5,0,0.5,0),
 			Parent = outline,
-			ZIndex = 99998
+			ZIndex = 9998
 		}
 	)
 	-- 3
@@ -186,7 +186,7 @@ function library:new(props)
 			Size = UDim2.new(1,0,1,0),
 			Position = UDim2.new(0.5,0,0.5,0),
 			Parent = outline2,
-			ZIndex = 99997
+			ZIndex = 9997
 		}
 	)
 	-- 4
@@ -202,7 +202,7 @@ function library:new(props)
 			Size = UDim2.new(1,-10,1,-25),
 			Position = UDim2.new(0.5,0,1,-5),
 			Parent = outline2,
-			ZIndex = 99996
+			ZIndex = 9996
 		}
 	)
 	--
@@ -214,7 +214,7 @@ function library:new(props)
 			Size = UDim2.new(1,0,0,20),
 			Position = UDim2.new(0.5,0,0,0),
 			Parent = outline2,
-			ZIndex = 99995
+			ZIndex = 9995
 		}
 	)
 	-- 5
@@ -229,7 +229,7 @@ function library:new(props)
 			Size = UDim2.new(1,0,1,0),
 			Position = UDim2.new(0.5,0,0.5,0),
 			Parent = main,
-			ZIndex = 99994
+			ZIndex = 9994
 		}
 	)
 	--
@@ -247,7 +247,7 @@ function library:new(props)
 			TextSize = textsize,
 			TextStrokeTransparency = 0,
 			Parent = title,
-			ZIndex = 99993,
+			ZIndex = 9993,
 		}
 	)
 	-- 6
@@ -259,7 +259,7 @@ function library:new(props)
 			Size = UDim2.new(1,-6,1,-6),
 			Position = UDim2.new(0.5,0,0.5,0),
 			Parent = main,
-			ZIndex = 99992
+			ZIndex = 9992
 		}
 	)
 	-- 7
@@ -271,7 +271,7 @@ function library:new(props)
 			Size = UDim2.new(1,-6,1,-6),
 			Position = UDim2.new(0.5,0,0.5,0),
 			Parent = main,
-			ZIndex = 99991
+			ZIndex = 9991
 		}
 	)
 	-- 8
@@ -286,7 +286,7 @@ function library:new(props)
 			Size = UDim2.new(1,0,1,-20),
 			Position = UDim2.new(0.5,0,1,0),
 			Parent = holder,
-			ZIndex = 999990
+			ZIndex = 9990
 		}
 	)
 	--
@@ -299,7 +299,7 @@ function library:new(props)
 			Position = UDim2.new(0.5,0,0,0),
 			ZIndex = 2,
 			Parent = holder,
-			ZIndex = 999989
+			ZIndex = 9989
 		}
 	)
 	-- 9
@@ -313,7 +313,7 @@ function library:new(props)
 			Size = UDim2.new(1,0,1,0),
 			Position = UDim2.new(0,0,0,0),
 			Parent = tabs,
-			ZIndex = 999988
+			ZIndex = 9988
 		}
 	)
 	--
