@@ -190,6 +190,7 @@ function library:new(props)
 	local main = utility.new(
 		"Frame",
 		{
+			Name = "NWTF"
 			AnchorPoint = Vector2.new(0.5,1),
 			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
 			BorderColor3 = Color3.fromRGB(56, 56, 56),
@@ -197,7 +198,8 @@ function library:new(props)
 			BorderSizePixel = 1,
 			Size = UDim2.new(1,-10,1,-25),
 			Position = UDim2.new(0.5,0,1,-5),
-			Parent = outline2
+			Parent = outline2,
+			ZIndex = 100
 		}
 	)
 	--
