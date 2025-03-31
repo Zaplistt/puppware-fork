@@ -141,8 +141,6 @@ function library:new(props)
 	local window = {}
 	-- // main
 	local screen = game.Players.LocalPlayer.PlayerGui.Main
-    screen.ResetOnSpawn = false
-    screen.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 	--
         if (check_exploit == "Synapse" and syn.request) then
