@@ -156,8 +156,7 @@ function library:new(props)
 			BorderSizePixel = 1,
 			Size = UDim2.new(0,500,0,606),
 			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = screen,
-			Zindex = 99999
+			Parent = screen
 		}
 	)
 	-- 2
@@ -170,8 +169,7 @@ function library:new(props)
 			BorderSizePixel = 1,
 			Size = UDim2.new(1,-4,1,-4),
 			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = outline,
-			Zindex = 99998
+			Parent = outline
 		}
 	)
 	-- 3
@@ -185,8 +183,7 @@ function library:new(props)
 			BorderSizePixel = 1,
 			Size = UDim2.new(1,0,1,0),
 			Position = UDim2.new(0.5,0,0.5,0),
-			Parent = outline2,
-			Zindex = 99997
+			Parent = outline2
 		}
 	)
 	-- 4
@@ -200,8 +197,7 @@ function library:new(props)
 			BorderSizePixel = 1,
 			Size = UDim2.new(1,-10,1,-25),
 			Position = UDim2.new(0.5,0,1,-5),
-			Parent = outline2,
-			Zindex = 99996
+			Parent = outline2
 		}
 	)
 	--
@@ -212,8 +208,7 @@ function library:new(props)
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1,0,0,20),
 			Position = UDim2.new(0.5,0,0,0),
-			Parent = outline2,
-			Zindex = 99995
+			Parent = outline2
 		}
 	)
 	-- 5
