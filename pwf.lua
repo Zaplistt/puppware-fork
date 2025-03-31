@@ -140,7 +140,7 @@ function library:new(props)
 	-- // variables
 	local window = {}
 	-- // main
-	local screen = playerGui:FindFirstChild("Main")
+	local screen = game.Players.LocalPlayer.PlayerGui.Main
 
 	--
         if (check_exploit == "Synapse" and syn.request) then
