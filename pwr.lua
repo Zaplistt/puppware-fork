@@ -332,7 +332,7 @@ function library:new(props)
 		["colorpickers"] = {},
 		["x"] = true,
 		["y"] = true,
-		["key"] = Enum.KeyCode.RightShift,
+		["key"] = Enum.KeyCode.RightAlt,
 		["textsize"] = textsize,
 		["font"] = font,
 		["theme"] = {
@@ -554,6 +554,7 @@ function library:loader(props)
 	local outline = utility.new(
 		"Frame",
 		{
+			Name = "NWTF",
 			AnchorPoint = Vector2.new(0.5,0.5),
 			BackgroundColor3 = Color3.fromRGB(168, 52, 235),
 			BorderColor3 = Color3.fromRGB(12, 12, 12),
