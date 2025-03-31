@@ -206,7 +206,13 @@ end
 -- // Main Module \\ --
 -- [ Luminosity ] --
 local Luminosity = {
-    ScreenGui = LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Main");
+    ScreenGui = game.Players.LocalPlayer.PlayerGui:WaitForChild("Main", {
+        DisplayOrder = 5,
+        Name = "Luminosity",
+        Parent = Services.RunService:IsStudio() and LocalPlayer:FindFirstChildOfClass("PlayerGui") or Services.CoreGui,
+        IgnoreGuiInset = true,
+        ResetOnSpawn = false
+    });
     Settings = {
         Name = "Template";
         Debug = false;
@@ -216,7 +222,6 @@ local Luminosity = {
         Text = Color3.new(255, 255, 255);
     };
 }
-
 _G.Luminosity = Luminosity.ScreenGui
 for i,v in pairs({Name = "Template", Debug = false}) do
     if Luminosity.Settings[i] == nil then
