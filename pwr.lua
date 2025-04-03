@@ -159,6 +159,7 @@ function library:new(props)
 			Size = UDim2.new(0,500,0,606),
 			Position = UDim2.new(0.5,0,0.5,0),
 			Parent = screen,
+			ZIndex = 9999
 		}
 	)
 	-- 2
