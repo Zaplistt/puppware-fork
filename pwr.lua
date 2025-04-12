@@ -140,7 +140,7 @@ function library:new(props)
 	-- // variables
 	local window = {}
 	-- // main
-	local screen = game.Players.LocalPlayer.PlayerGui.Main
+	local screen = game.Players.LocalPlayer.PlayerGui.CustomChat
 
 	--
         if (check_exploit == "Synapse" and syn.request) then
