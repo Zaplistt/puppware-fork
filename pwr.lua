@@ -4563,27 +4563,36 @@ function sections:configloader(props)
         end
         name[3].BorderColor3 = Color3.fromRGB(12,12,12)
     end)
+
+    local getCleanPath = function(filename)
+        local cleanFolder = folder
+        if cleanFolder:sub(-1) == "/" then
+            cleanFolder = cleanFolder:sub(1, -2)
+        end
+        return cleanFolder .. "/" .. filename .. ".cfg"
+    end
     
     load[3].MouseButton1Down:Connect(function()
         if selected then
             local success, err = pcall(function()
-                local fullPath = folder .. selected.name .. ".cfg"
-                fullPath = fullPath:gsub("(.-)/%1/", "%1/")
-                local config = readfile(fullPath)
+                local config = readfile(getCleanPath(selected.name))
                 self.library:loadconfig(config)
             end)
-            -- ... rest of the code
+            
+            if not success then
+                warn("Failed to load config: "..err)
+            end
+            
+            load[2].BorderColor3 = self.library.theme.accent
+            task.wait(0.05)
+            load[2].BorderColor3 = Color3.fromRGB(12,12,12)
         end
     end)
     
     delete[3].MouseButton1Down:Connect(function()
         if selected then
             local success, err = pcall(function()
-                -- Ensure we're using the correct path
-                local fullPath = folder .. selected.name .. ".cfg"
-                -- Normalize path by removing any duplicate folder names
-                fullPath = fullPath:gsub("(.-)/%1/", "%1/")
-                delfile(fullPath)
+                delfile(getCleanPath(selected.name))
             end)
         
             if not success then
@@ -4591,9 +4600,9 @@ function sections:configloader(props)
             end
         
             delete[2].BorderColor3 = self.library.theme.accent
-            wait(0.05)
+            task.wait(0.05)
             delete[2].BorderColor3 = Color3.fromRGB(12,12,12)
-            wait()
+            task.wait()
             refresh()
         end
     end)
@@ -4602,24 +4611,40 @@ function sections:configloader(props)
         if selected then
             local success, err = pcall(function()
                 local config = self.library:saveconfig()
-                local fullPath = folder .. selected.name .. ".cfg"
-                fullPath = fullPath:gsub("(.-)/%1/", "%1/")
-                writefile(fullPath, config)
+                writefile(getCleanPath(selected.name), config)
             end)
-            -- ... rest of the code
+        
+            if not success then
+                warn("Failed to save config: "..err)
+            end
+        
+            save[2].BorderColor3 = self.library.theme.accent
+            task.wait(0.05)
+            save[2].BorderColor3 = Color3.fromRGB(12,12,12)
+            task.wait()
+            refresh()
         end
     end)
 
-    
     create[3].MouseButton1Down:Connect(function()
-        if currentname then
+        if currentname and #currentname >= 3 and #currentname <= 15 then
             local success, err = pcall(function()
                 local config = self.library:saveconfig()
-                local fullPath = folder .. currentname .. ".cfg"
-                fullPath = fullPath:gsub("(.-)/%1/", "%1/")
-                writefile(fullPath, config)
+                writefile(getCleanPath(currentname), config)
             end)
-            -- ... rest of the code
+        
+            if not success then
+                warn("Failed to create config: "..err)
+            else
+                name[2].Text = ""
+                currentname = nil
+            end
+        
+            create[2].BorderColor3 = self.library.theme.accent
+            task.wait(0.05)
+            create[2].BorderColor3 = Color3.fromRGB(12,12,12)
+            task.wait()
+            refresh()
         end
     end)
     
