@@ -4070,7 +4070,7 @@ end
 --
 function sections:configloader(props)
     -- // properties
-    local folder = props.folder or props.Folder or "UniversalConfigs/"
+    local folder = props.folder or props.Folder or "nebulawtf/configs/"
     -- // variables
     local configloader = {}
     -- // main
@@ -4480,26 +4480,27 @@ function sections:configloader(props)
     end
     
     local refresh = function()
-    -- Clear existing buttons
+        -- Clear existing buttons
         for i,v in pairs(createdbuttons) do
             v.button:Destroy()
         end
         createdbuttons = {}
-    
-    -- Ensure folder ends with a slash
-        if folder:sub(-1) ~= "/" then
-            folder = folder .. "/"
+        
+        -- Ensure folder path is correct
+        local cleanFolder = folder
+        -- Remove trailing slash if present
+        if cleanFolder:sub(-1) == "/" then
+            cleanFolder = cleanFolder:sub(1, -2)
         end
-    
-    -- Create folder if it doesn't exist
-        if not isfolder(folder) then
-            makefolder(folder)
+        -- Create folder if it doesn't exist
+        if not isfolder(cleanFolder) then
+            makefolder(cleanFolder)
         end
-    
-    -- Get all config files
+        
+        -- Get all config files
         local configFiles = {}
-        if isfolder(folder) then
-            for i, file in pairs(listfiles(folder)) do
+        if isfolder(cleanFolder) then
+            for i, file in pairs(listfiles(cleanFolder)) do
                 if file:sub(-4) == ".cfg" then
                     -- Extract just the filename without path
                     local fileName = file:match("([^/\\]+)%.cfg$")
@@ -4509,11 +4510,19 @@ function sections:configloader(props)
                 end
             end
         end
-    
+        
         -- If no configs exist, select nothing
         if #configFiles == 0 then
             selected = nil
         end
+    end
+    
+    local getCleanPath = function(filename)
+        local cleanFolder = folder
+        if cleanFolder:sub(-1) == "/" then
+            cleanFolder = cleanFolder:sub(1, -2)
+        end
+        return cleanFolder .. "/" .. filename .. ".cfg"
     end
     
     refresh()
@@ -4563,24 +4572,25 @@ function sections:configloader(props)
         end
         name[3].BorderColor3 = Color3.fromRGB(12,12,12)
     end)
-
-    local getCleanPath = function(filename)
-        local cleanFolder = folder
-        if cleanFolder:sub(-1) == "/" then
-            cleanFolder = cleanFolder:sub(1, -2)
-        end
-        return cleanFolder .. "/" .. filename .. ".cfg"
-    end
     
     load[3].MouseButton1Down:Connect(function()
         if selected then
             local success, err = pcall(function()
                 local config = readfile(getCleanPath(selected.name))
                 self.library:loadconfig(config)
+                Notify({
+                    Title = "Config Loaded",
+                    Description = "Successfully loaded config: "..selected.name,
+                    Duration = 3
+                })
             end)
             
             if not success then
-                warn("Failed to load config: "..err)
+                Notify({
+                    Title = "Config Error",
+                    Description = "Failed to load config: "..err,
+                    Duration = 3
+                })
             end
             
             load[2].BorderColor3 = self.library.theme.accent
@@ -4593,12 +4603,21 @@ function sections:configloader(props)
         if selected then
             local success, err = pcall(function()
                 delfile(getCleanPath(selected.name))
+                Notify({
+                    Title = "Config Deleted",
+                    Description = "Successfully deleted config: "..selected.name,
+                    Duration = 3
+                })
             end)
-        
+            
             if not success then
-                warn("Failed to delete config: "..err)
+                Notify({
+                    Title = "Config Error",
+                    Description = "Failed to delete config: "..err,
+                    Duration = 3
+                })
             end
-        
+            
             delete[2].BorderColor3 = self.library.theme.accent
             task.wait(0.05)
             delete[2].BorderColor3 = Color3.fromRGB(12,12,12)
@@ -4612,12 +4631,21 @@ function sections:configloader(props)
             local success, err = pcall(function()
                 local config = self.library:saveconfig()
                 writefile(getCleanPath(selected.name), config)
+                Notify({
+                    Title = "Config Saved",
+                    Description = "Successfully saved config: "..selected.name,
+                    Duration = 3
+                })
             end)
-        
+            
             if not success then
-                warn("Failed to save config: "..err)
+                Notify({
+                    Title = "Config Error",
+                    Description = "Failed to save config: "..err,
+                    Duration = 3
+                })
             end
-        
+            
             save[2].BorderColor3 = self.library.theme.accent
             task.wait(0.05)
             save[2].BorderColor3 = Color3.fromRGB(12,12,12)
@@ -4625,21 +4653,29 @@ function sections:configloader(props)
             refresh()
         end
     end)
-
+    
     create[3].MouseButton1Down:Connect(function()
         if currentname and #currentname >= 3 and #currentname <= 15 then
             local success, err = pcall(function()
                 local config = self.library:saveconfig()
                 writefile(getCleanPath(currentname), config)
-            end)
-        
-            if not success then
-                warn("Failed to create config: "..err)
-            else
+                Notify({
+                    Title = "Config Created",
+                    Description = "Successfully created config: "..currentname,
+                    Duration = 3
+                })
                 name[2].Text = ""
                 currentname = nil
+            end)
+            
+            if not success then
+                Notify({
+                    Title = "Config Error",
+                    Description = "Failed to create config: "..err,
+                    Duration = 3
+                })
             end
-        
+            
             create[2].BorderColor3 = self.library.theme.accent
             task.wait(0.05)
             create[2].BorderColor3 = Color3.fromRGB(12,12,12)
