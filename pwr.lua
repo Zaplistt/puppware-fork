@@ -4578,11 +4578,6 @@ function sections:configloader(props)
             local success, err = pcall(function()
                 local config = readfile(getCleanPath(selected.name))
                 self.library:loadconfig(config)
-                Notify({
-                    Title = "Config Loaded",
-                    Description = "Successfully loaded config: "..selected.name,
-                    Duration = 3
-                })
             end)
             
             load[2].BorderColor3 = self.library.theme.accent
@@ -4595,11 +4590,6 @@ function sections:configloader(props)
         if selected then
             local success, err = pcall(function()
                 delfile(getCleanPath(selected.name))
-                Notify({
-                    Title = "Config Deleted",
-                    Description = "Successfully deleted config: "..selected.name,
-                    Duration = 3
-                })
             end)
             
             delete[2].BorderColor3 = self.library.theme.accent
@@ -4615,11 +4605,6 @@ function sections:configloader(props)
             local success, err = pcall(function()
                 local config = self.library:saveconfig()
                 writefile(getCleanPath(selected.name), config)
-                Notify({
-                    Title = "Config Saved",
-                    Description = "Successfully saved config: "..selected.name,
-                    Duration = 3
-                })
             end)
             
             save[2].BorderColor3 = self.library.theme.accent
@@ -4635,11 +4620,6 @@ function sections:configloader(props)
             local success, err = pcall(function()
                 local config = self.library:saveconfig()
                 writefile(getCleanPath(currentname), config)
-                Notify({
-                    Title = "Config Created",
-                    Description = "Successfully created config: "..currentname,
-                    Duration = 3
-                })
                 name[2].Text = ""
                 currentname = nil
             end)
