@@ -4487,7 +4487,7 @@ function sections:configloader(props)
 		end
 		createdbuttons = {}
 		for i,v in pairs(listfiles(folder)) do
-			if v:sub(-4) == "nebulawtf.cfg" then
+			if v:sub(-4) == ".cfg" then
 				if i == 1 then 
 					makebutton(v:sub(#tostring(folder)+2, -5),true)
 				else
@@ -4546,14 +4546,14 @@ function sections:configloader(props)
 	end)
 	--
 	load[3].MouseButton1Down:Connect(function()
-		self.library:loadconfig(folder..selected.name.."nebulawtf.cfg")
+		self.library:loadconfig(folder..selected.name..".cfg")
 		load[2].BorderColor3 = self.library.theme.accent
 		wait(0.05)
 		load[2].BorderColor3 = Color3.fromRGB(12,12,12)
 	end)
 	--
 	delete[3].MouseButton1Down:Connect(function()
-		delfile(folder..selected.name.."nebulawtf.cfg")
+		delfile(folder..selected.name..".cfg"
 		delete[2].BorderColor3 = self.library.theme.accent
 		wait(0.05)
 		delete[2].BorderColor3 = Color3.fromRGB(12,12,12)
@@ -4562,7 +4562,7 @@ function sections:configloader(props)
 	end)
 	--
 	save[3].MouseButton1Down:Connect(function()
-		writefile(folder..selected.name.."nebulawtf.cfg", self.library:saveconfig())
+		writefile(folder..selected.name..".cfg", self.library:saveconfig())
 		save[2].BorderColor3 = self.library.theme.accent
 		wait(0.05)
 		save[2].BorderColor3 = Color3.fromRGB(12,12,12)
@@ -4571,7 +4571,7 @@ function sections:configloader(props)
 	end)
 	--
 	create[3].MouseButton1Down:Connect(function()
-		writefile(folder..currentname.."nebulawtf.cfg", self.library:saveconfig())
+		writefile(folder..currentname..".cfg", self.library:saveconfig()
 		create[2].BorderColor3 = self.library.theme.accent
 		wait(0.05)
 		create[2].BorderColor3 = Color3.fromRGB(12,12,12)
