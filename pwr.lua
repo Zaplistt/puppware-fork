@@ -4585,14 +4585,6 @@ function sections:configloader(props)
                 })
             end)
             
-            if not success then
-                Notify({
-                    Title = "Config Error",
-                    Description = "Failed to load config: "..err,
-                    Duration = 3
-                })
-            end
-            
             load[2].BorderColor3 = self.library.theme.accent
             task.wait(0.05)
             load[2].BorderColor3 = Color3.fromRGB(12,12,12)
@@ -4609,14 +4601,6 @@ function sections:configloader(props)
                     Duration = 3
                 })
             end)
-            
-            if not success then
-                Notify({
-                    Title = "Config Error",
-                    Description = "Failed to delete config: "..err,
-                    Duration = 3
-                })
-            end
             
             delete[2].BorderColor3 = self.library.theme.accent
             task.wait(0.05)
@@ -4637,14 +4621,6 @@ function sections:configloader(props)
                     Duration = 3
                 })
             end)
-            
-            if not success then
-                Notify({
-                    Title = "Config Error",
-                    Description = "Failed to save config: "..err,
-                    Duration = 3
-                })
-            end
             
             save[2].BorderColor3 = self.library.theme.accent
             task.wait(0.05)
@@ -4667,14 +4643,6 @@ function sections:configloader(props)
                 name[2].Text = ""
                 currentname = nil
             end)
-            
-            if not success then
-                Notify({
-                    Title = "Config Error",
-                    Description = "Failed to create config: "..err,
-                    Duration = 3
-                })
-            end
             
             create[2].BorderColor3 = self.library.theme.accent
             task.wait(0.05)
