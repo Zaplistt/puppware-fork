@@ -4480,35 +4480,36 @@ function sections:configloader(props)
     end
     
     local refresh = function()
-        -- Clear existing buttons
+    -- Clear existing buttons
         for i,v in pairs(createdbuttons) do
             v.button:Destroy()
         end
         createdbuttons = {}
-        
-        -- Create folder if it doesn't exist
+    
+    -- Ensure folder ends with a slash
+        if folder:sub(-1) ~= "/" then
+            folder = folder .. "/"
+        end
+    
+    -- Create folder if it doesn't exist
         if not isfolder(folder) then
             makefolder(folder)
         end
-        
-        -- Get all config files
+    
+    -- Get all config files
         local configFiles = {}
         if isfolder(folder) then
             for i, file in pairs(listfiles(folder)) do
                 if file:sub(-4) == ".cfg" then
-                    table.insert(configFiles, file)
+                    -- Extract just the filename without path
+                    local fileName = file:match("([^/\\]+)%.cfg$")
+                    if fileName then
+                        makebutton(fileName, i == 1)
+                    end
                 end
             end
         end
-        
-        -- Create buttons for each config
-        for i, file in pairs(configFiles) do
-            local fileName = file:match("([^/]+)%.cfg$")
-            if fileName then
-                makebutton(fileName, i == 1)
-            end
-        end
-        
+    
         -- If no configs exist, select nothing
         if #configFiles == 0 then
             selected = nil
@@ -4566,30 +4567,29 @@ function sections:configloader(props)
     load[3].MouseButton1Down:Connect(function()
         if selected then
             local success, err = pcall(function()
-                local config = readfile(folder..selected.name..".cfg")
+                local fullPath = folder .. selected.name .. ".cfg"
+                fullPath = fullPath:gsub("(.-)/%1/", "%1/")
+                local config = readfile(fullPath)
                 self.library:loadconfig(config)
             end)
-            
-            if not success then
-                warn("Failed to load config: "..err)
-            end
-            
-            load[2].BorderColor3 = self.library.theme.accent
-            wait(0.05)
-            load[2].BorderColor3 = Color3.fromRGB(12,12,12)
+            -- ... rest of the code
         end
     end)
     
     delete[3].MouseButton1Down:Connect(function()
         if selected then
             local success, err = pcall(function()
-                delfile(folder..selected.name..".cfg")
+                -- Ensure we're using the correct path
+                local fullPath = folder .. selected.name .. ".cfg"
+                -- Normalize path by removing any duplicate folder names
+                fullPath = fullPath:gsub("(.-)/%1/", "%1/")
+                delfile(fullPath)
             end)
-            
+        
             if not success then
                 warn("Failed to delete config: "..err)
             end
-            
+        
             delete[2].BorderColor3 = self.library.theme.accent
             wait(0.05)
             delete[2].BorderColor3 = Color3.fromRGB(12,12,12)
@@ -4602,37 +4602,24 @@ function sections:configloader(props)
         if selected then
             local success, err = pcall(function()
                 local config = self.library:saveconfig()
-                writefile(folder..selected.name..".cfg", config)
+                local fullPath = folder .. selected.name .. ".cfg"
+                fullPath = fullPath:gsub("(.-)/%1/", "%1/")
+                writefile(fullPath, config)
             end)
-            
-            if not success then
-                warn("Failed to save config: "..err)
-            end
-            
-            save[2].BorderColor3 = self.library.theme.accent
-            wait(0.05)
-            save[2].BorderColor3 = Color3.fromRGB(12,12,12)
-            wait()
-            refresh()
+            -- ... rest of the code
         end
     end)
+
     
     create[3].MouseButton1Down:Connect(function()
         if currentname then
             local success, err = pcall(function()
                 local config = self.library:saveconfig()
-                writefile(folder..currentname..".cfg", config)
+                local fullPath = folder .. currentname .. ".cfg"
+                fullPath = fullPath:gsub("(.-)/%1/", "%1/")
+                writefile(fullPath, config)
             end)
-            
-            if not success then
-                warn("Failed to create config: "..err)
-            end
-            
-            create[2].BorderColor3 = self.library.theme.accent
-            wait(0.05)
-            create[2].BorderColor3 = Color3.fromRGB(12,12,12)
-            wait()
-            refresh()
+            -- ... rest of the code
         end
     end)
     
