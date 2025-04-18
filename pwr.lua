@@ -4526,7 +4526,7 @@ function sections:configloader(props)
 	create[1].Position = UDim2.new(1,-5,0,44)
 	create[1].AnchorPoint = Vector2.new(1,0)
 	--
-	name[2].PlaceholderText = "nebulawtf"
+	name[2].PlaceholderText = "Name"
 	--
 	local currentname = nil
 	--
@@ -4553,7 +4553,7 @@ function sections:configloader(props)
 	end)
 	--
 	delete[3].MouseButton1Down:Connect(function()
-		delfile(folder..selected.name..".cfg"
+		delfile(folder..selected.name..".cfg")
 		delete[2].BorderColor3 = self.library.theme.accent
 		wait(0.05)
 		delete[2].BorderColor3 = Color3.fromRGB(12,12,12)
@@ -4571,7 +4571,7 @@ function sections:configloader(props)
 	end)
 	--
 	create[3].MouseButton1Down:Connect(function()
-		writefile(folder..currentname..".cfg", self.library:saveconfig()
+		writefile(folder..currentname..".cfg", self.library:saveconfig())
 		create[2].BorderColor3 = self.library.theme.accent
 		wait(0.05)
 		create[2].BorderColor3 = Color3.fromRGB(12,12,12)
