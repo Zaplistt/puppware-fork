@@ -4070,7 +4070,11 @@ end
 --
 function sections:configloader(props)
     -- // properties
-    local folder = props.folder or props.Folder or "nebulawtf/configs/"
+    local folder = props.folder or props.Folder or "nebulawtf/configs"
+    -- Ensure folder path ends with /
+    if folder:sub(-1) ~= "/" then
+        folder = folder .. "/"
+    end
     -- // variables
     local configloader = {}
     -- // main
@@ -4604,6 +4608,10 @@ function sections:configloader(props)
         if currentname and #currentname >= 3 and #currentname <= 15 then
             local config = self.library:saveconfig()
             pcall(function()
+                -- Ensure folder exists
+                if not isfolder(folder) then
+                    makefolder(folder)
+                end
                 writefile(folder .. currentname .. ".cfg", config)
                 name[2].Text = ""
                 currentname = nil
