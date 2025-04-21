@@ -4070,22 +4070,27 @@ end
 --
 function sections:configloader(props)
     -- // properties
-    local folder = props.folder or props.Folder or "nebulawtf/configs"
-    -- Ensure folder path ends with /
-    if folder:sub(-1) ~= "/" then
-        folder = folder .. "/"
-    end
+    local folderName = props.folder or props.Folder or "nebulawtf/configs"
+    -- Ensure folder path is properly formatted
+    local folder = folderName:gsub("\\", "/"):gsub("/+$", "") .. "/"
     -- // variables
     local configloader = {}
+
+    local function safeFileOperation(op, path, content)
+        local success, result = pcall(op, path, content)
+        if not success then
+            warn("File operation failed:", result)
+            return false
+        end
+        return true
+    end
+
     -- // main
-    local clholder = utility.new(
-        "Frame",
-        {
-            BackgroundTransparency = 1,
-            Size = UDim2.new(1,0,0,222),
-            Parent = self.content
-        }
-    )
+    local clholder = utility.new("Frame", {
+        BackgroundTransparency = 1,
+        Size = UDim2.new(1, 0, 0, 222),
+        Parent = self.content
+    })
     
     local outline = utility.new(
         "Frame",
@@ -4485,7 +4490,7 @@ function sections:configloader(props)
     
     local refresh = function()
         -- Clear existing buttons
-        for i,v in pairs(createdbuttons) do
+        for i, v in pairs(createdbuttons) do
             v.button:Destroy()
         end
         createdbuttons = {}
@@ -4496,19 +4501,26 @@ function sections:configloader(props)
         end
         
         -- Get all config files
-        local configs = listfiles(folder)
+        local success, files = pcall(function()
+            return listfiles(folder)
+        end)
+        
+        if not success then
+            warn("Failed to list config files:", files)
+            return
+        end
         
         -- Create buttons for each config
-        for i, configPath in ipairs(configs) do
+        for i, configPath in ipairs(files) do
             -- Extract just the filename without path and extension
-            local fileName = configPath:match("^.+/(.+).cfg$")
+            local fileName = configPath:match("^.+[\\/](.+)%.cfg$")
             if fileName then
                 makebutton(fileName, i == 1)
             end
         end
         
         -- If no configs exist, select nothing
-        if #configs == 0 then
+        if #files == 0 then
             selected = nil
         end
     end
@@ -4603,32 +4615,37 @@ function sections:configloader(props)
             save[2].BorderColor3 = Color3.fromRGB(12,12,12)
         end
     end)
+
+    refresh()
     
     create[3].MouseButton1Down:Connect(function()
         if currentname and #currentname >= 3 and #currentname <= 15 then
+            -- Ensure folder exists
+            if not isfolder(folder) then
+                makefolder(folder)
+            end
+            
             local config = self.library:saveconfig()
-            pcall(function()
-                -- Ensure folder exists
-                if not isfolder(folder) then
-                    makefolder(folder)
-                end
-                writefile(folder .. currentname .. ".cfg", config)
+            local fullPath = folder .. currentname .. ".cfg"
+            
+            if safeFileOperation(writefile, fullPath, config) then
                 name[2].Text = ""
                 currentname = nil
-            end)
+                task.wait(0.1) -- Small delay before refresh
+                refresh()
+            end
             
             create[2].BorderColor3 = self.library.theme.accent
             task.wait(0.05)
-            create[2].BorderColor3 = Color3.fromRGB(12,12,12)
-            task.wait()
-            refresh()
+            create[2].BorderColor3 = Color3.fromRGB(12, 12, 12)
         end
     end)
     
     -- // button tbl
     configloader = {
         ["library"] = self.library,
-        ["refresh"] = refresh
+        ["refresh"] = refresh,
+        ["folder"] = folder
     }
     
     -- // metatable indexing + return
