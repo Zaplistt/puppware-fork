@@ -4486,43 +4486,27 @@ function sections:configloader(props)
         end
         createdbuttons = {}
         
-        -- Ensure folder path is correct
-        local cleanFolder = folder
-        -- Remove trailing slash if present
-        if cleanFolder:sub(-1) == "/" then
-            cleanFolder = cleanFolder:sub(1, -2)
-        end
-        -- Create folder if it doesn't exist
-        if not isfolder(cleanFolder) then
-            makefolder(cleanFolder)
+        -- Ensure folder exists
+        if not isfolder(folder) then
+            makefolder(folder)
         end
         
         -- Get all config files
-        local configFiles = {}
-        if isfolder(cleanFolder) then
-            for i, file in pairs(listfiles(cleanFolder)) do
-                if file:sub(-4) == ".cfg" then
-                    -- Extract just the filename without path
-                    local fileName = file:match("([^/\\]+)%.cfg$")
-                    if fileName then
-                        makebutton(fileName, i == 1)
-                    end
-                end
+        local configs = listfiles(folder)
+        
+        -- Create buttons for each config
+        for i, configPath in ipairs(configs) do
+            -- Extract just the filename without path and extension
+            local fileName = configPath:match("^.+/(.+).cfg$")
+            if fileName then
+                makebutton(fileName, i == 1)
             end
         end
         
         -- If no configs exist, select nothing
-        if #configFiles == 0 then
+        if #configs == 0 then
             selected = nil
         end
-    end
-    
-    local getCleanPath = function(filename)
-        local cleanFolder = folder
-        if cleanFolder:sub(-1) == "/" then
-            cleanFolder = cleanFolder:sub(1, -2)
-        end
-        return cleanFolder .. "/" .. filename .. ".cfg"
     end
     
     refresh()
@@ -4575,10 +4559,13 @@ function sections:configloader(props)
     
     load[3].MouseButton1Down:Connect(function()
         if selected then
-            local success, err = pcall(function()
-                local config = readfile(getCleanPath(selected.name))
-                self.library:loadconfig(config)
+            local success, config = pcall(function()
+                return readfile(folder .. selected.name .. ".cfg")
             end)
+            
+            if success then
+                self.library:loadconfig(config)
+            end
             
             load[2].BorderColor3 = self.library.theme.accent
             task.wait(0.05)
@@ -4588,8 +4575,8 @@ function sections:configloader(props)
     
     delete[3].MouseButton1Down:Connect(function()
         if selected then
-            local success, err = pcall(function()
-                delfile(getCleanPath(selected.name))
+            pcall(function()
+                delfile(folder .. selected.name .. ".cfg")
             end)
             
             delete[2].BorderColor3 = self.library.theme.accent
@@ -4602,24 +4589,22 @@ function sections:configloader(props)
     
     save[3].MouseButton1Down:Connect(function()
         if selected then
-            local success, err = pcall(function()
-                local config = self.library:saveconfig()
-                writefile(getCleanPath(selected.name), config)
+            local config = self.library:saveconfig()
+            pcall(function()
+                writefile(folder .. selected.name .. ".cfg", config)
             end)
             
             save[2].BorderColor3 = self.library.theme.accent
             task.wait(0.05)
             save[2].BorderColor3 = Color3.fromRGB(12,12,12)
-            task.wait()
-            refresh()
         end
     end)
     
     create[3].MouseButton1Down:Connect(function()
         if currentname and #currentname >= 3 and #currentname <= 15 then
-            local success, err = pcall(function()
-                local config = self.library:saveconfig()
-                writefile(getCleanPath(currentname), config)
+            local config = self.library:saveconfig()
+            pcall(function()
+                writefile(folder .. currentname .. ".cfg", config)
                 name[2].Text = ""
                 currentname = nil
             end)
