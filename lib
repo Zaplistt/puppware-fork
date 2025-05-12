@@ -1,222 +1,482 @@
 local Library = {}
 
--- Colors and settings
-Library.Settings = {
-    BGColor = Color3.fromRGB(30, 30, 40),
-    TextColor = Color3.fromRGB(220, 220, 220),
-    AccentColor = Color3.fromRGB(0, 150, 255),
-    Font = Enum.Font.Gotham,
-    BoldFont = Enum.Font.GothamBold,
-    TabHeight = 30
+-- Colors
+Library.Colors = {
+    Background = Color3.fromRGB(30, 30, 40),
+    Text = Color3.fromRGB(220, 220, 220),
+    Accent = Color3.fromRGB(0, 150, 255),
+    SectionHeader = Color3.fromRGB(50, 50, 60),
+    Divider = Color3.fromRGB(60, 60, 70),
+    ToggleOff = Color3.fromRGB(80, 80, 80),
+    SliderTrack = Color3.fromRGB(60, 60, 70),
+    Dropdown = Color3.fromRGB(50, 50, 60),
+    DropdownList = Color3.fromRGB(40, 40, 50)
 }
 
--- Create the window
+-- Fonts
+Library.Fonts = {
+    Regular = Enum.Font.Gotham,
+    Bold = Enum.Font.GothamBold,
+    Section = Enum.Font.GothamBold
+}
+
+-- Create main window
 function Library:CreateWindow(title)
-    local window = {}
-    setmetatable(window, self)
-    self.__index = self
-
+    local self = setmetatable({}, {__index = Library})
+    
     -- Create screen GUI
-    window.ScreenGui = Instance.new("ScreenGui")
-    window.ScreenGui.Name = "CombatUI"
-    window.ScreenGui.Parent = game:GetService("CoreGui")
-    window.ScreenGui.ResetOnSpawn = false
-
-    -- Main frame
-    window.MainFrame = Instance.new("Frame")
-    window.MainFrame.Name = "MainFrame"
-    window.MainFrame.Size = UDim2.new(0, 300, 0, 400)
-    window.MainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
-    window.MainFrame.BackgroundColor3 = self.Settings.BGColor
-    window.MainFrame.BorderSizePixel = 0
-    window.MainFrame.Parent = window.ScreenGui
-
-    -- Title
-    window.Title = Instance.new("TextLabel")
-    window.Title.Name = "Title"
-    window.Title.Text = title or "COMBAT"
-    window.Title.TextColor3 = self.Settings.TextColor
-    window.Title.TextSize = 18
-    window.Title.Font = self.Settings.BoldFont
-    window.Title.Size = UDim2.new(1, 0, 0, 30)
-    window.Title.BackgroundTransparency = 1
-    window.Title.Parent = window.MainFrame
-
-    -- Tab buttons
-    window.TabButtons = Instance.new("Frame")
-    window.TabButtons.Name = "TabButtons"
-    window.TabButtons.Size = UDim2.new(1, 0, 0, 30)
-    window.TabButtons.Position = UDim2.new(0, 0, 0, 30)
-    window.TabButtons.BackgroundTransparency = 1
-    window.TabButtons.Parent = window.MainFrame
-
-    -- Content frame
-    window.ContentFrame = Instance.new("ScrollingFrame")
-    window.ContentFrame.Name = "Content"
-    window.ContentFrame.Size = UDim2.new(1, 0, 1, -60)
-    window.ContentFrame.Position = UDim2.new(0, 0, 0, 60)
-    window.ContentFrame.BackgroundTransparency = 1
-    window.ContentFrame.ScrollBarThickness = 4
-    window.ContentFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    window.ContentFrame.Parent = window.MainFrame
-
+    self.ScreenGui = Instance.new("ScreenGui")
+    self.ScreenGui.Name = "VisualsUI"
+    self.ScreenGui.Parent = game:GetService("CoreGui")
+    self.ScreenGui.ResetOnSpawn = false
+    
+    -- Main container
+    self.MainFrame = Instance.new("Frame")
+    self.MainFrame.Name = "MainFrame"
+    self.MainFrame.Size = UDim2.new(0, 300, 0, 500)
+    self.MainFrame.Position = UDim2.new(0.1, 0, 0.1, 0)
+    self.MainFrame.BackgroundColor3 = Library.Colors.Background
+    self.MainFrame.BorderSizePixel = 0
+    self.MainFrame.Parent = self.ScreenGui
+    
+    -- Title bar
+    self.Title = Instance.new("TextLabel")
+    self.Title.Name = "Title"
+    self.Title.Text = title or "VISUALS"
+    self.Title.TextColor3 = Library.Colors.Text
+    self.Title.TextSize = 18
+    self.Title.Font = Library.Fonts.Bold
+    self.Title.Size = UDim2.new(1, 0, 0, 30)
+    self.Title.BackgroundTransparency = 1
+    self.Title.Parent = self.MainFrame
+    
+    -- Tab buttons container
+    self.TabButtons = Instance.new("Frame")
+    self.TabButtons.Name = "TabButtons"
+    self.TabButtons.Size = UDim2.new(1, 0, 0, 30)
+    self.TabButtons.Position = UDim2.new(0, 0, 0, 30)
+    self.TabButtons.BackgroundColor3 = Library.Colors.SectionHeader
+    self.TabButtons.BorderSizePixel = 0
+    self.TabButtons.Parent = self.MainFrame
+    
+    -- Tab buttons layout
+    self.TabButtonsLayout = Instance.new("UIListLayout")
+    self.TabButtonsLayout.FillDirection = Enum.FillDirection.Horizontal
+    self.TabButtonsLayout.Parent = self.TabButtons
+    
+    -- Content area
+    self.ContentFrame = Instance.new("ScrollingFrame")
+    self.ContentFrame.Name = "Content"
+    self.ContentFrame.Size = UDim2.new(1, 0, 1, -60)
+    self.ContentFrame.Position = UDim2.new(0, 0, 0, 60)
+    self.ContentFrame.BackgroundTransparency = 1
+    self.ContentFrame.ScrollBarThickness = 4
+    self.ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    self.ContentFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    self.ContentFrame.Parent = self.MainFrame
+    
     -- Content layout
-    window.ContentLayout = Instance.new("UIListLayout")
-    window.ContentLayout.Padding = UDim.new(0, 5)
-    window.ContentLayout.Parent = window.ContentFrame
-
+    self.ContentLayout = Instance.new("UIListLayout")
+    self.ContentLayout.Padding = UDim.new(0, 5)
+    self.ContentLayout.Parent = self.ContentFrame
+    
     -- Tabs storage
-    window.Tabs = {}
-    window.CurrentTab = nil
+    self.Tabs = {}
+    self.CurrentTab = nil
+    
+    return self
+end
 
-    -- Add tab method
-    function window:AddTab(name)
-        local tab = {}
-        
-        -- Tab button
-        tab.Button = Instance.new("TextButton")
-        tab.Button.Name = name
-        tab.Button.Text = name
-        tab.Button.TextColor3 = self.Settings.TextColor
-        tab.Button.TextSize = 14
-        tab.Button.Font = self.Settings.Font
-        tab.Button.Size = UDim2.new(0.25, 0, 1, 0)
-        tab.Button.BackgroundTransparency = 1
-        tab.Button.Parent = self.TabButtons
-        
-        -- Tab content
-        tab.Frame = Instance.new("Frame")
-        tab.Frame.Name = name
-        tab.Frame.Size = UDim2.new(1, -10, 0, 0)
-        tab.Frame.Position = UDim2.new(0, 5, 0, 0)
-        tab.Frame.BackgroundTransparency = 1
-        tab.Frame.Visible = false
-        tab.Frame.Parent = self.ContentFrame
-        
-        -- Tab layout
-        tab.Layout = Instance.new("UIListLayout")
-        tab.Layout.Padding = UDim.new(0, 5)
-        tab.Layout.Parent = tab.Frame
-        
-        -- Tab click handler
-        tab.Button.MouseButton1Click:Connect(function()
-            if self.CurrentTab then
-                self.CurrentTab.Frame.Visible = false
-                self.CurrentTab.Button.TextColor3 = self.Settings.TextColor
-            end
-            self.CurrentTab = tab
-            tab.Frame.Visible = true
-            tab.Button.TextColor3 = self.Settings.AccentColor
-        end)
-        
-        table.insert(self.Tabs, tab)
-        
-        -- Set first tab as active
-        if #self.Tabs == 1 then
-            tab.Button.TextColor3 = self.Settings.AccentColor
-            tab.Frame.Visible = true
-            self.CurrentTab = tab
+-- Add tab to window
+function Library:AddTab(name)
+    local tab = {}
+    
+    -- Tab button
+    tab.Button = Instance.new("TextButton")
+    tab.Button.Name = name
+    tab.Button.Text = name
+    tab.Button.TextColor3 = Library.Colors.Text
+    tab.Button.TextSize = 14
+    tab.Button.Font = Library.Fonts.Regular
+    tab.Button.Size = UDim2.new(0.33, 0, 1, 0)
+    tab.Button.BackgroundTransparency = 1
+    tab.Button.Parent = self.TabButtons
+    
+    -- Tab content frame
+    tab.Frame = Instance.new("Frame")
+    tab.Frame.Name = name
+    tab.Frame.Size = UDim2.new(1, -10, 0, 0)
+    tab.Frame.Position = UDim2.new(0, 5, 0, 0)
+    tab.Frame.BackgroundTransparency = 1
+    tab.Frame.Visible = false
+    tab.Frame.Parent = self.ContentFrame
+    
+    -- Tab content layout
+    tab.Layout = Instance.new("UIListLayout")
+    tab.Layout.Padding = UDim.new(0, 5)
+    tab.Layout.Parent = tab.Frame
+    
+    -- Tab click handler
+    tab.Button.MouseButton1Click:Connect(function()
+        if self.CurrentTab then
+            self.CurrentTab.Frame.Visible = false
+            self.CurrentTab.Button.TextColor3 = Library.Colors.Text
         end
-        
-        -- Add section method
-        function tab:AddSection(title)
-            local section = {}
-            
-            -- Section frame
-            section.Frame = Instance.new("Frame")
-            section.Frame.Name = "Section"
-            section.Frame.Size = UDim2.new(1, 0, 0, 0)
-            section.Frame.BackgroundTransparency = 1
-            section.Frame.Parent = tab.Frame
-            
-            -- Section layout
-            section.Layout = Instance.new("UIListLayout")
-            section.Layout.Padding = UDim.new(0, 5)
-            section.Layout.Parent = section.Frame
-            
-            -- Section title
-            section.Title = Instance.new("TextLabel")
-            section.Title.Name = "Title"
-            section.Title.Text = title
-            section.Title.TextColor3 = self.Settings.TextColor
-            section.Title.TextSize = 16
-            section.Title.Font = self.Settings.BoldFont
-            section.Title.Size = UDim2.new(1, 0, 0, 20)
-            section.Title.BackgroundTransparency = 1
-            section.Title.TextXAlignment = Enum.TextXAlignment.Left
-            section.Title.Parent = section.Frame
-            
-            -- Section divider
-            section.Divider = Instance.new("Frame")
-            section.Divider.Name = "Divider"
-            section.Divider.Size = UDim2.new(1, 0, 0, 1)
-            section.Divider.Position = UDim2.new(0, 0, 0, 20)
-            section.Divider.BackgroundColor3 = Color3.fromRGB(60, 60, 70)
-            section.Divider.BorderSizePixel = 0
-            section.Divider.Parent = section.Frame
-            
-            -- Add toggle method
-            function section:AddToggle(options)
-                local toggle = {}
-                options = options or {}
-                
-                -- Toggle frame
-                toggle.Frame = Instance.new("Frame")
-                toggle.Frame.Name = "Toggle"
-                toggle.Frame.Size = UDim2.new(1, 0, 0, 20)
-                toggle.Frame.BackgroundTransparency = 1
-                toggle.Frame.Parent = section.Frame
-                
-                -- Toggle label
-                toggle.Label = Instance.new("TextLabel")
-                toggle.Label.Name = "Label"
-                toggle.Label.Text = options.Text or "Toggle"
-                toggle.Label.TextColor3 = self.Settings.TextColor
-                toggle.Label.TextSize = 14
-                toggle.Label.Font = self.Settings.Font
-                toggle.Label.Size = UDim2.new(1, -25, 1, 0)
-                toggle.Label.BackgroundTransparency = 1
-                toggle.Label.TextXAlignment = Enum.TextXAlignment.Left
-                toggle.Label.Parent = toggle.Frame
-                
-                -- Toggle button
-                toggle.Button = Instance.new("TextButton")
-                toggle.Button.Name = "Button"
-                toggle.Button.Text = ""
-                toggle.Button.Size = UDim2.new(0, 20, 0, 20)
-                toggle.Button.Position = UDim2.new(1, -20, 0, 0)
-                toggle.Button.BackgroundColor3 = options.Default and self.Settings.AccentColor or Color3.fromRGB(80, 80, 80)
-                toggle.Button.BorderSizePixel = 0
-                toggle.Button.Parent = toggle.Frame
-                
-                -- Toggle state
-                toggle.Value = options.Default or false
-                toggle.Callback = options.Callback or function() end
-                
-                -- Toggle click handler
-                toggle.Button.MouseButton1Click:Connect(function()
-                    toggle.Value = not toggle.Value
-                    toggle.Button.BackgroundColor3 = toggle.Value and self.Settings.AccentColor or Color3.fromRGB(80, 80, 80)
-                    toggle.Callback(toggle.Value)
-                end)
-                
-                -- Set method
-                function toggle:Set(value)
-                    toggle.Value = value
-                    toggle.Button.BackgroundColor3 = toggle.Value and self.Settings.AccentColor or Color3.fromRGB(80, 80, 80)
-                    toggle.Callback(toggle.Value)
-                end
-                
-                return toggle
-            end
-            
-            return section
-        end
-        
-        return tab
+        self.CurrentTab = tab
+        tab.Frame.Visible = true
+        tab.Button.TextColor3 = Library.Colors.Accent
+    end)
+    
+    table.insert(self.Tabs, tab)
+    
+    -- Set first tab as active
+    if #self.Tabs == 1 then
+        tab.Button.TextColor3 = Library.Colors.Accent
+        tab.Frame.Visible = true
+        self.CurrentTab = tab
     end
-
-    return window
+    
+    -- Add section function to tab
+    function tab:AddSection(title)
+        local section = {}
+        
+        -- Section frame
+        section.Frame = Instance.new("Frame")
+        section.Frame.Name = "Section"
+        section.Frame.Size = UDim2.new(1, 0, 0, 0)
+        section.Frame.BackgroundTransparency = 1
+        section.Frame.Parent = tab.Frame
+        
+        -- Section layout
+        section.Layout = Instance.new("UIListLayout")
+        section.Layout.Padding = UDim.new(0, 5)
+        section.Layout.Parent = section.Frame
+        
+        -- Section title
+        section.Title = Instance.new("TextLabel")
+        section.Title.Name = "Title"
+        section.Title.Text = " "..string.upper(title).." "
+        section.Title.TextColor3 = Library.Colors.Text
+        section.Title.TextSize = 14
+        section.Title.Font = Library.Fonts.Section
+        section.Title.Size = UDim2.new(0, 0, 0, 20)
+        section.Title.AutomaticSize = Enum.AutomaticSize.X
+        section.Title.BackgroundColor3 = Library.Colors.SectionHeader
+        section.Title.TextXAlignment = Enum.TextXAlignment.Left
+        section.Title.Parent = section.Frame
+        
+        -- Add toggle function
+        function section:AddToggle(options)
+            local toggle = {}
+            options = options or {}
+            
+            -- Toggle frame
+            toggle.Frame = Instance.new("Frame")
+            toggle.Frame.Name = "Toggle"
+            toggle.Frame.Size = UDim2.new(1, 0, 0, 20)
+            toggle.Frame.BackgroundTransparency = 1
+            toggle.Frame.Parent = section.Frame
+            
+            -- Toggle label
+            toggle.Label = Instance.new("TextLabel")
+            toggle.Label.Name = "Label"
+            toggle.Label.Text = options.Text or "Toggle"
+            toggle.Label.TextColor3 = Library.Colors.Text
+            toggle.Label.TextSize = 14
+            toggle.Label.Font = Library.Fonts.Regular
+            toggle.Label.Size = UDim2.new(1, -25, 1, 0)
+            toggle.Label.BackgroundTransparency = 1
+            toggle.Label.TextXAlignment = Enum.TextXAlignment.Left
+            toggle.Label.Parent = toggle.Frame
+            
+            -- Toggle button
+            toggle.Button = Instance.new("TextButton")
+            toggle.Button.Name = "Button"
+            toggle.Button.Text = ""
+            toggle.Button.Size = UDim2.new(0, 20, 0, 20)
+            toggle.Button.Position = UDim2.new(1, -20, 0, 0)
+            toggle.Button.BackgroundColor3 = options.Default and Library.Colors.Accent or Library.Colors.ToggleOff
+            toggle.Button.BorderSizePixel = 0
+            toggle.Button.Parent = toggle.Frame
+            
+            -- Toggle state
+            toggle.Value = options.Default or false
+            toggle.Callback = options.Callback or function() end
+            
+            -- Toggle click handler
+            toggle.Button.MouseButton1Click:Connect(function()
+                toggle.Value = not toggle.Value
+                toggle.Button.BackgroundColor3 = toggle.Value and Library.Colors.Accent or Library.Colors.ToggleOff
+                toggle.Callback(toggle.Value)
+            end)
+            
+            -- Set function
+            function toggle:Set(value)
+                toggle.Value = value
+                toggle.Button.BackgroundColor3 = toggle.Value and Library.Colors.Accent or Library.Colors.ToggleOff
+                toggle.Callback(toggle.Value)
+            end
+            
+            return toggle
+        end
+        
+        -- Add slider function
+        function section:AddSlider(options)
+            local slider = {}
+            options = options or {}
+            
+            -- Validate options
+            options.Min = options.Min or 0
+            options.Max = options.Max or 100
+            options.Default = options.Default or options.Min
+            options.Text = options.Text or "Slider"
+            
+            -- Slider frame
+            slider.Frame = Instance.new("Frame")
+            slider.Frame.Name = "Slider"
+            slider.Frame.Size = UDim2.new(1, 0, 0, 40)
+            slider.Frame.BackgroundTransparency = 1
+            slider.Frame.Parent = section.Frame
+            
+            -- Slider label
+            slider.Label = Instance.new("TextLabel")
+            slider.Label.Name = "Label"
+            slider.Label.Text = options.Text
+            slider.Label.TextColor3 = Library.Colors.Text
+            slider.Label.TextSize = 14
+            slider.Label.Font = Library.Fonts.Regular
+            slider.Label.Size = UDim2.new(1, -45, 0, 20)
+            slider.Label.BackgroundTransparency = 1
+            slider.Label.TextXAlignment = Enum.TextXAlignment.Left
+            slider.Label.Parent = slider.Frame
+            
+            -- Slider value display
+            slider.ValueLabel = Instance.new("TextLabel")
+            slider.ValueLabel.Name = "Value"
+            slider.ValueLabel.Text = tostring(options.Default)
+            slider.ValueLabel.TextColor3 = Library.Colors.Text
+            slider.ValueLabel.TextSize = 14
+            slider.ValueLabel.Font = Library.Fonts.Regular
+            slider.ValueLabel.Size = UDim2.new(0, 40, 0, 20)
+            slider.ValueLabel.Position = UDim2.new(1, -40, 0, 0)
+            slider.ValueLabel.BackgroundTransparency = 1
+            slider.ValueLabel.TextXAlignment = Enum.TextXAlignment.Right
+            slider.ValueLabel.Parent = slider.Frame
+            
+            -- Slider track
+            slider.Track = Instance.new("Frame")
+            slider.Track.Name = "Track"
+            slider.Track.Size = UDim2.new(1, 0, 0, 4)
+            slider.Track.Position = UDim2.new(0, 0, 0, 25)
+            slider.Track.BackgroundColor3 = Library.Colors.SliderTrack
+            slider.Track.BorderSizePixel = 0
+            slider.Track.Parent = slider.Frame
+            
+            -- Slider fill
+            slider.Fill = Instance.new("Frame")
+            slider.Fill.Name = "Fill"
+            slider.Fill.Size = UDim2.new((options.Default - options.Min) / (options.Max - options.Min), 0, 1, 0)
+            slider.Fill.BackgroundColor3 = Library.Colors.Accent
+            slider.Fill.BorderSizePixel = 0
+            slider.Fill.Parent = slider.Track
+            
+            -- Slider button
+            slider.Button = Instance.new("TextButton")
+            slider.Button.Name = "Button"
+            slider.Button.Text = ""
+            slider.Button.Size = UDim2.new(0, 10, 0, 10)
+            slider.Button.Position = UDim2.new((options.Default - options.Min) / (options.Max - options.Min), -5, 0.5, -5)
+            slider.Button.BackgroundColor3 = Library.Colors.Accent
+            slider.Button.BorderSizePixel = 0
+            slider.Button.Parent = slider.Track
+            
+            -- Slider state
+            slider.Value = options.Default
+            slider.Callback = options.Callback or function() end
+            
+            -- Slider dragging
+            local dragging = false
+            
+            slider.Button.MouseButton1Down:Connect(function()
+                dragging = true
+            end)
+            
+            game:GetService("UserInputService").InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    dragging = false
+                end
+            end)
+            
+            game:GetService("UserInputService").InputChanged:Connect(function(input)
+                if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                    local x = (input.Position.X - slider.Track.AbsolutePosition.X) / slider.Track.AbsoluteSize.X
+                    x = math.clamp(x, 0, 1)
+                    local value = math.floor(options.Min + (options.Max - options.Min) * x)
+                    
+                    slider.Value = value
+                    slider.ValueLabel.Text = tostring(value)
+                    slider.Fill.Size = UDim2.new(x, 0, 1, 0)
+                    slider.Button.Position = UDim2.new(x, -5, 0.5, -5)
+                    slider.Callback(value)
+                end
+            end)
+            
+            -- Set function
+            function slider:Set(value)
+                value = math.clamp(value, options.Min, options.Max)
+                local x = (value - options.Min) / (options.Max - options.Min)
+                
+                slider.Value = value
+                slider.ValueLabel.Text = tostring(value)
+                slider.Fill.Size = UDim2.new(x, 0, 1, 0)
+                slider.Button.Position = UDim2.new(x, -5, 0.5, -5)
+                slider.Callback(value)
+            end
+            
+            return slider
+        end
+        
+        -- Add dropdown function
+        function section:AddDropdown(options)
+            local dropdown = {}
+            options = options or {}
+            
+            -- Validate options
+            options.Options = options.Options or {"Option 1", "Option 2"}
+            options.Default = options.Default or 1
+            options.Text = options.Text or "Dropdown"
+            
+            -- Dropdown frame
+            dropdown.Frame = Instance.new("Frame")
+            dropdown.Frame.Name = "Dropdown"
+            dropdown.Frame.Size = UDim2.new(1, 0, 0, 20)
+            dropdown.Frame.BackgroundTransparency = 1
+            dropdown.Frame.Parent = section.Frame
+            
+            -- Dropdown label
+            dropdown.Label = Instance.new("TextLabel")
+            dropdown.Label.Name = "Label"
+            dropdown.Label.Text = options.Text
+            dropdown.Label.TextColor3 = Library.Colors.Text
+            dropdown.Label.TextSize = 14
+            dropdown.Label.Font = Library.Fonts.Regular
+            dropdown.Label.Size = UDim2.new(0.5, 0, 1, 0)
+            dropdown.Label.BackgroundTransparency = 1
+            dropdown.Label.TextXAlignment = Enum.TextXAlignment.Left
+            dropdown.Label.Parent = dropdown.Frame
+            
+            -- Dropdown button
+            dropdown.Button = Instance.new("TextButton")
+            dropdown.Button.Name = "Button"
+            dropdown.Button.Text = options.Options[options.Default] or options.Options[1]
+            dropdown.Button.TextColor3 = Library.Colors.Text
+            dropdown.Button.TextSize = 14
+            dropdown.Button.Font = Library.Fonts.Regular
+            dropdown.Button.Size = UDim2.new(0.5, -5, 1, 0)
+            dropdown.Button.Position = UDim2.new(0.5, 5, 0, 0)
+            dropdown.Button.BackgroundColor3 = Library.Colors.Dropdown
+            dropdown.Button.BorderSizePixel = 0
+            dropdown.Button.Parent = dropdown.Frame
+            
+            -- Dropdown list
+            dropdown.List = Instance.new("ScrollingFrame")
+            dropdown.List.Name = "List"
+            dropdown.List.Size = UDim2.new(0.5, -5, 0, math.min(#options.Options * 20, 100))
+            dropdown.List.Position = UDim2.new(0.5, 5, 1, 5)
+            dropdown.List.BackgroundColor3 = Library.Colors.DropdownList
+            dropdown.List.BorderSizePixel = 0
+            dropdown.List.Visible = false
+            dropdown.List.CanvasSize = UDim2.new(0, 0, 0, #options.Options * 20)
+            dropdown.List.ScrollBarThickness = 4
+            dropdown.List.Parent = dropdown.Frame
+            
+            -- List layout
+            local listLayout = Instance.new("UIListLayout")
+            listLayout.Parent = dropdown.List
+            
+            -- Create options
+            for i, option in ipairs(options.Options) do
+                local optionButton = Instance.new("TextButton")
+                optionButton.Name = option
+                optionButton.Text = option
+                optionButton.TextColor3 = Library.Colors.Text
+                optionButton.TextSize = 14
+                optionButton.Font = Library.Fonts.Regular
+                optionButton.Size = UDim2.new(1, 0, 0, 20)
+                optionButton.BackgroundColor3 = Library.Colors.Dropdown
+                optionButton.BorderSizePixel = 0
+                optionButton.Parent = dropdown.List
+                
+                optionButton.MouseButton1Click:Connect(function()
+                    dropdown.Button.Text = option
+                    dropdown.List.Visible = false
+                    if options.Callback then
+                        options.Callback(option, i)
+                    end
+                end)
+            end
+            
+            -- Toggle list visibility
+            dropdown.Button.MouseButton1Click:Connect(function()
+                dropdown.List.Visible = not dropdown.List.Visible
+            end)
+            
+            -- Close when clicking elsewhere
+            game:GetService("UserInputService").InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    if dropdown.List.Visible then
+                        local mousePos = input.Position
+                        local listPos = dropdown.List.AbsolutePosition
+                        local listSize = dropdown.List.AbsoluteSize
+                        
+                        if not (mousePos.X >= listPos.X and mousePos.X <= listPos.X + listSize.X and
+                               mousePos.Y >= listPos.Y and mousePos.Y <= listPos.Y + listSize.Y) then
+                            dropdown.List.Visible = false
+                        end
+                    end
+                end
+            end)
+            
+            -- Set function
+            function dropdown:Set(value)
+                if type(value) == "number" and options.Options[value] then
+                    dropdown.Button.Text = options.Options[value]
+                    if options.Callback then
+                        options.Callback(options.Options[value], value)
+                    end
+                elseif table.find(options.Options, value) then
+                    dropdown.Button.Text = value
+                    if options.Callback then
+                        options.Callback(value, table.find(options.Options, value))
+                    end
+                end
+            end
+            
+            return dropdown
+        end
+        
+        -- Add label function (for "OK" text)
+        function section:AddLabel(options)
+            options = options or {}
+            
+            local label = Instance.new("TextLabel")
+            label.Name = "Label"
+            label.Text = options.Text or ""
+            label.TextColor3 = Library.Colors.Text
+            label.TextSize = 14
+            label.Font = Library.Fonts.Regular
+            label.Size = UDim2.new(1, 0, 0, 20)
+            label.BackgroundTransparency = 1
+            label.TextXAlignment = Enum.TextXAlignment.Left
+            label.Parent = section.Frame
+            
+            return label
+        end
+        
+        return section
+    end
+    
+    return tab
 end
 
 return Library
