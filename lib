@@ -1,0 +1,576 @@
+-- CheatUILibrary.lua
+local CheatUILibrary = {}
+CheatUILibrary.__index = CheatUILibrary
+
+-- Colors
+local defaultColors = {
+    background = Color3.fromRGB(30, 30, 40),
+    header = Color3.fromRGB(25, 25, 35),
+    tab = Color3.fromRGB(40, 40, 50),
+    section = Color3.fromRGB(50, 50, 60),
+    text = Color3.fromRGB(255, 255, 255),
+    accent = Color3.fromRGB(100, 150, 255),
+    toggleOn = Color3.fromRGB(100, 255, 100),
+    toggleOff = Color3.fromRGB(255, 100, 100)
+}
+
+-- Create new UI instance
+function CheatUILibrary.new(title, config)
+    local self = setmetatable({}, CheatUILibrary)
+    
+    -- Configuration
+    self.config = config or {}
+    self.colors = setmetatable(self.config.colors or {}, {__index = defaultColors})
+    self.size = self.config.size or UDim2.new(0.3, 0, 0.4, 0)
+    self.position = self.config.position or UDim2.new(0.35, 0, 0.3, 0)
+    self.title = title or "Cheat UI"
+    
+    -- Create main screen GUI
+    self.screenGui = Instance.new("ScreenGui")
+    self.screenGui.Name = "CheatUILibrary"
+    self.screenGui.ResetOnSpawn = false
+    
+    -- Main frame
+    self.mainFrame = Instance.new("Frame")
+    self.mainFrame.Name = "MainFrame"
+    self.mainFrame.Size = self.size
+    self.mainFrame.Position = self.position
+    self.mainFrame.BackgroundColor3 = self.colors.background
+    self.mainFrame.BorderSizePixel = 0
+    self.mainFrame.ClipsDescendants = true
+    self.mainFrame.Parent = self.screenGui
+    
+    -- Header
+    self.header = Instance.new("Frame")
+    self.header.Name = "Header"
+    self.header.Size = UDim2.new(1, 0, 0, 30)
+    self.header.BackgroundColor3 = self.colors.header
+    self.header.BorderSizePixel = 0
+    self.header.Parent = self.mainFrame
+    
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Name = "Title"
+    titleLabel.Size = UDim2.new(1, -10, 1, 0)
+    titleLabel.Position = UDim2.new(0, 10, 0, 0)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Text = self.title
+    titleLabel.TextColor3 = self.colors.text
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.TextSize = 16
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.Parent = self.header
+    
+    -- Tab container
+    self.tabContainer = Instance.new("Frame")
+    self.tabContainer.Name = "TabContainer"
+    self.tabContainer.Size = UDim2.new(1, 0, 0, 30)
+    self.tabContainer.Position = UDim2.new(0, 0, 0, 30)
+    self.tabContainer.BackgroundColor3 = self.colors.tab
+    self.tabContainer.BorderSizePixel = 0
+    self.tabContainer.Parent = self.mainFrame
+    
+    -- Tab list layout
+    local tabListLayout = Instance.new("UIListLayout")
+    tabListLayout.Name = "TabListLayout"
+    tabListLayout.FillDirection = Enum.FillDirection.Horizontal
+    tabListLayout.Padding = UDim.new(0, 5)
+    tabListLayout.Parent = self.tabContainer
+    
+    -- Content frame
+    self.contentFrame = Instance.new("Frame")
+    self.contentFrame.Name = "ContentFrame"
+    self.contentFrame.Size = UDim2.new(1, 0, 1, -60)
+    self.contentFrame.Position = UDim2.new(0, 0, 0, 60)
+    self.contentFrame.BackgroundTransparency = 1
+    self.contentFrame.Parent = self.mainFrame
+    
+    -- Scroll frame
+    self.scrollFrame = Instance.new("ScrollingFrame")
+    self.scrollFrame.Name = "ScrollFrame"
+    self.scrollFrame.Size = UDim2.new(1, 0, 1, 0)
+    self.scrollFrame.BackgroundTransparency = 1
+    self.scrollFrame.BorderSizePixel = 0
+    self.scrollFrame.ScrollBarThickness = 5
+    self.scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    self.scrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    self.scrollFrame.Parent = self.contentFrame
+    
+    local scrollLayout = Instance.new("UIListLayout")
+    scrollLayout.Name = "ScrollLayout"
+    scrollLayout.Padding = UDim.new(0, 5)
+    scrollLayout.Parent = self.scrollFrame
+    
+    -- Tabs storage
+    self.tabs = {}
+    self.currentTab = nil
+    
+    -- Parent to player GUI
+    if game:GetService("Players").LocalPlayer then
+        self.screenGui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+    end
+    
+    return self
+end
+
+-- Create a new tab
+function CheatUILibrary:Tab(name)
+    local tab = {}
+    tab.name = name
+    tab.sections = {}
+    
+    -- Tab button
+    tab.button = Instance.new("TextButton")
+    tab.button.Name = name .. "Tab"
+    tab.button.Size = UDim2.new(0, 100, 1, 0)
+    tab.button.BackgroundColor3 = self.colors.tab
+    tab.button.BorderSizePixel = 0
+    tab.button.Text = name
+    tab.button.TextColor3 = self.colors.text
+    tab.button.Font = Enum.Font.Gotham
+    tab.button.TextSize = 14
+    tab.button.Parent = self.tabContainer
+    
+    -- Tab content frame
+    tab.content = Instance.new("Frame")
+    tab.content.Name = name .. "Content"
+    tab.content.Size = UDim2.new(1, 0, 1, 0)
+    tab.content.BackgroundTransparency = 1
+    tab.content.Visible = false
+    tab.content.Parent = self.scrollFrame
+    
+    -- Tab button click event
+    tab.button.MouseButton1Click:Connect(function()
+        self:SwitchTab(tab)
+    end)
+    
+    -- Add to tabs
+    table.insert(self.tabs, tab)
+    
+    -- Set as current tab if first tab
+    if #self.tabs == 1 then
+        self:SwitchTab(tab)
+    end
+    
+    return tab
+end
+
+-- Switch to a tab
+function CheatUILibrary:SwitchTab(tab)
+    if self.currentTab then
+        self.currentTab.content.Visible = false
+        self.currentTab.button.BackgroundColor3 = self.colors.tab
+    end
+    
+    self.currentTab = tab
+    tab.content.Visible = true
+    tab.button.BackgroundColor3 = self.colors.accent
+end
+
+-- Create a section in a tab
+function CheatUILibrary:Section(tab, name)
+    local section = {}
+    section.name = name
+    
+    -- Section frame
+    section.frame = Instance.new("Frame")
+    section.frame.Name = name .. "Section"
+    section.frame.Size = UDim2.new(1, -10, 0, 0)
+    section.frame.AutomaticSize = Enum.AutomaticSize.Y
+    section.frame.Position = UDim2.new(0, 5, 0, 0)
+    section.frame.BackgroundColor3 = self.colors.section
+    section.frame.BorderSizePixel = 0
+    section.frame.Parent = tab.content
+    
+    -- Section layout
+    local sectionLayout = Instance.new("UIListLayout")
+    sectionLayout.Name = "SectionLayout"
+    sectionLayout.Padding = UDim.new(0, 5)
+    sectionLayout.Parent = section.frame
+    
+    -- Section padding
+    local sectionPadding = Instance.new("UIPadding")
+    sectionPadding.Name = "SectionPadding"
+    sectionPadding.PaddingTop = UDim.new(0, 5)
+    sectionPadding.PaddingBottom = UDim.new(0, 5)
+    sectionPadding.PaddingLeft = UDim.new(0, 5)
+    sectionPadding.PaddingRight = UDim.new(0, 5)
+    sectionPadding.Parent = section.frame
+    
+    -- Section title
+    section.title = Instance.new("TextLabel")
+    section.title.Name = "Title"
+    section.title.Size = UDim2.new(1, 0, 0, 20)
+    section.title.BackgroundTransparency = 1
+    section.title.Text = name
+    section.title.TextColor3 = self.colors.text
+    section.title.Font = Enum.Font.GothamBold
+    section.title.TextSize = 14
+    section.title.TextXAlignment = Enum.TextXAlignment.Left
+    section.title.Parent = section.frame
+    
+    -- Add to tab sections
+    table.insert(tab.sections, section)
+    
+    return section
+end
+
+-- Create a toggle button
+function CheatUILibrary:Toggle(section, name, default, callback)
+    local toggle = {}
+    toggle.value = default or false
+    
+    -- Toggle frame
+    toggle.frame = Instance.new("Frame")
+    toggle.frame.Name = name .. "Toggle"
+    toggle.frame.Size = UDim2.new(1, 0, 0, 25)
+    toggle.frame.BackgroundTransparency = 1
+    toggle.frame.Parent = section.frame
+    
+    -- Toggle button
+    toggle.button = Instance.new("TextButton")
+    toggle.button.Name = "Button"
+    toggle.button.Size = UDim2.new(0, 25, 0, 25)
+    toggle.button.Position = UDim2.new(1, -25, 0, 0)
+    toggle.button.BackgroundColor3 = toggle.value and self.colors.toggleOn or self.colors.toggleOff
+    toggle.button.BorderSizePixel = 0
+    toggle.button.Text = ""
+    toggle.button.Parent = toggle.frame
+    
+    -- Toggle label
+    toggle.label = Instance.new("TextLabel")
+    toggle.label.Name = "Label"
+    toggle.label.Size = UDim2.new(1, -30, 1, 0)
+    toggle.label.BackgroundTransparency = 1
+    toggle.label.Text = name
+    toggle.label.TextColor3 = self.colors.text
+    toggle.label.Font = Enum.Font.Gotham
+    toggle.label.TextSize = 14
+    toggle.label.TextXAlignment = Enum.TextXAlignment.Left
+    toggle.label.Parent = toggle.frame
+    
+    -- Toggle click event
+    toggle.button.MouseButton1Click:Connect(function()
+        toggle.value = not toggle.value
+        toggle.button.BackgroundColor3 = toggle.value and self.colors.toggleOn or self.colors.toggleOff
+        if callback then callback(toggle.value) end
+    end)
+    
+    return toggle
+end
+
+-- Create a button
+function CheatUILibrary:Button(section, name, callback)
+    local button = {}
+    
+    -- Button frame
+    button.frame = Instance.new("TextButton")
+    button.frame.Name = name .. "Button"
+    button.frame.Size = UDim2.new(1, 0, 0, 25)
+    button.frame.BackgroundColor3 = self.colors.accent
+    button.frame.BorderSizePixel = 0
+    button.frame.Text = name
+    button.frame.TextColor3 = self.colors.text
+    button.frame.Font = Enum.Font.Gotham
+    button.frame.TextSize = 14
+    button.frame.Parent = section.frame
+    
+    -- Button click event
+    button.frame.MouseButton1Click:Connect(function()
+        if callback then callback() end
+    end)
+    
+    return button
+end
+
+-- Create a slider
+function CheatUILibrary:Slider(section, name, min, max, default, callback)
+    local slider = {}
+    slider.value = default or min
+    
+    -- Slider frame
+    slider.frame = Instance.new("Frame")
+    slider.frame.Name = name .. "Slider"
+    slider.frame.Size = UDim2.new(1, 0, 0, 40)
+    slider.frame.BackgroundTransparency = 1
+    slider.frame.Parent = section.frame
+    
+    -- Slider label
+    slider.label = Instance.new("TextLabel")
+    slider.label.Name = "Label"
+    slider.label.Size = UDim2.new(1, 0, 0, 15)
+    slider.label.BackgroundTransparency = 1
+    slider.label.Text = name .. ": " .. slider.value
+    slider.label.TextColor3 = self.colors.text
+    slider.label.Font = Enum.Font.Gotham
+    slider.label.TextSize = 14
+    slider.label.TextXAlignment = Enum.TextXAlignment.Left
+    slider.label.Parent = slider.frame
+    
+    -- Slider track
+    slider.track = Instance.new("Frame")
+    slider.track.Name = "Track"
+    slider.track.Size = UDim2.new(1, 0, 0, 5)
+    slider.track.Position = UDim2.new(0, 0, 0, 20)
+    slider.track.BackgroundColor3 = self.colors.section
+    slider.track.BorderSizePixel = 0
+    slider.track.Parent = slider.frame
+    
+    -- Slider fill
+    slider.fill = Instance.new("Frame")
+    slider.fill.Name = "Fill"
+    slider.fill.Size = UDim2.new((slider.value - min) / (max - min), 0, 1, 0)
+    slider.fill.BackgroundColor3 = self.colors.accent
+    slider.fill.BorderSizePixel = 0
+    slider.fill.Parent = slider.track
+    
+    -- Slider button
+    slider.button = Instance.new("TextButton")
+    slider.button.Name = "Button"
+    slider.button.Size = UDim2.new(0, 15, 0, 15)
+    slider.button.Position = UDim2.new(slider.fill.Size.X.Scale, -7, 0.5, -7)
+    slider.button.BackgroundColor3 = self.colors.text
+    slider.button.BorderSizePixel = 0
+    slider.button.Text = ""
+    slider.button.Parent = slider.track
+    
+    -- Slider dragging
+    local dragging = false
+    
+    slider.button.MouseButton1Down:Connect(function()
+        dragging = true
+    end)
+    
+    game:GetService("UserInputService").InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+    
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local mousePos = game:GetService("Players").LocalPlayer:GetMouse().X
+            local absolutePos = slider.track.AbsolutePosition.X
+            local absoluteSize = slider.track.AbsoluteSize.X
+            
+            local relativePos = math.clamp(mousePos - absolutePos, 0, absoluteSize)
+            local ratio = relativePos / absoluteSize
+            slider.value = math.floor(min + (max - min) * ratio)
+            
+            slider.fill.Size = UDim2.new(ratio, 0, 1, 0)
+            slider.button.Position = UDim2.new(ratio, -7, 0.5, -7)
+            slider.label.Text = name .. ": " .. slider.value
+            
+            if callback then callback(slider.value) end
+        end
+    end)
+    
+    return slider
+end
+
+-- Create a dropdown
+function CheatUILibrary:Dropdown(section, name, options, default, callback)
+    local dropdown = {}
+    dropdown.value = default or options[1]
+    dropdown.open = false
+    
+    -- Dropdown frame
+    dropdown.frame = Instance.new("Frame")
+    dropdown.frame.Name = name .. "Dropdown"
+    dropdown.frame.Size = UDim2.new(1, 0, 0, 25)
+    dropdown.frame.BackgroundTransparency = 1
+    dropdown.frame.Parent = section.frame
+    
+    -- Dropdown button
+    dropdown.button = Instance.new("TextButton")
+    dropdown.button.Name = "Button"
+    dropdown.button.Size = UDim2.new(1, 0, 0, 25)
+    dropdown.button.BackgroundColor3 = self.colors.section
+    dropdown.button.BorderSizePixel = 0
+    dropdown.button.Text = name .. ": " .. dropdown.value
+    dropdown.button.TextColor3 = self.colors.text
+    dropdown.button.Font = Enum.Font.Gotham
+    dropdown.button.TextSize = 14
+    dropdown.button.TextXAlignment = Enum.TextXAlignment.Left
+    dropdown.button.Parent = dropdown.frame
+    
+    -- Dropdown options frame
+    dropdown.options = Instance.new("Frame")
+    dropdown.options.Name = "Options"
+    dropdown.options.Size = UDim2.new(1, 0, 0, 0)
+    dropdown.options.Position = UDim2.new(0, 0, 0, 30)
+    dropdown.options.BackgroundColor3 = self.colors.section
+    dropdown.options.BorderSizePixel = 0
+    dropdown.options.Visible = false
+    dropdown.options.Parent = dropdown.frame
+    
+    local optionsLayout = Instance.new("UIListLayout")
+    optionsLayout.Name = "OptionsLayout"
+    optionsLayout.Parent = dropdown.options
+    
+    -- Create options
+    for _, option in ipairs(options) do
+        local optionButton = Instance.new("TextButton")
+        optionButton.Name = option .. "Option"
+        optionButton.Size = UDim2.new(1, 0, 0, 25)
+        optionButton.BackgroundColor3 = self.colors.section
+        optionButton.BorderSizePixel = 0
+        optionButton.Text = option
+        optionButton.TextColor3 = self.colors.text
+        optionButton.Font = Enum.Font.Gotham
+        optionButton.TextSize = 14
+        optionButton.TextXAlignment = Enum.TextXAlignment.Left
+        optionButton.Parent = dropdown.options
+        
+        optionButton.MouseButton1Click:Connect(function()
+            dropdown.value = option
+            dropdown.button.Text = name .. ": " .. dropdown.value
+            dropdown.options.Visible = false
+            dropdown.open = false
+            if callback then callback(dropdown.value) end
+        end)
+    end
+    
+    -- Toggle dropdown
+    dropdown.button.MouseButton1Click:Connect(function()
+        dropdown.open = not dropdown.open
+        dropdown.options.Visible = dropdown.open
+        dropdown.options.Size = UDim2.new(1, 0, 0, #options * 25)
+    end)
+    
+    return dropdown
+end
+
+-- Create a textbox
+function CheatUILibrary:Textbox(section, name, placeholder, callback)
+    local textbox = {}
+    
+    -- Textbox frame
+    textbox.frame = Instance.new("Frame")
+    textbox.frame.Name = name .. "Textbox"
+    textbox.frame.Size = UDim2.new(1, 0, 0, 25)
+    textbox.frame.BackgroundTransparency = 1
+    textbox.frame.Parent = section.frame
+    
+    -- Textbox label
+    textbox.label = Instance.new("TextLabel")
+    textbox.label.Name = "Label"
+    textbox.label.Size = UDim2.new(0, 100, 1, 0)
+    textbox.label.BackgroundTransparency = 1
+    textbox.label.Text = name
+    textbox.label.TextColor3 = self.colors.text
+    textbox.label.Font = Enum.Font.Gotham
+    textbox.label.TextSize = 14
+    textbox.label.TextXAlignment = Enum.TextXAlignment.Left
+    textbox.label.Parent = textbox.frame
+    
+    -- Textbox input
+    textbox.input = Instance.new("TextBox")
+    textbox.input.Name = "Input"
+    textbox.input.Size = UDim2.new(1, -105, 1, 0)
+    textbox.input.Position = UDim2.new(0, 105, 0, 0)
+    textbox.input.BackgroundColor3 = self.colors.section
+    textbox.input.BorderSizePixel = 0
+    textbox.input.Text = ""
+    textbox.input.PlaceholderText = placeholder or ""
+    textbox.input.TextColor3 = self.colors.text
+    textbox.input.Font = Enum.Font.Gotham
+    textbox.input.TextSize = 14
+    textbox.input.Parent = textbox.frame
+    
+    -- Textbox focus lost event
+    textbox.input.FocusLost:Connect(function()
+        if callback then callback(textbox.input.Text) end
+    end)
+    
+    return textbox
+end
+
+-- Create a label
+function CheatUILibrary:Label(section, name)
+    local label = {}
+    
+    -- Label frame
+    label.frame = Instance.new("TextLabel")
+    label.frame.Name = name .. "Label"
+    label.frame.Size = UDim2.new(1, 0, 0, 20)
+    label.frame.BackgroundTransparency = 1
+    label.frame.Text = name
+    label.frame.TextColor3 = self.colors.text
+    label.frame.Font = Enum.Font.Gotham
+    label.frame.TextSize = 14
+    label.frame.TextXAlignment = Enum.TextXAlignment.Left
+    label.frame.Parent = section.frame
+    
+    return label
+end
+
+-- Create a keybind
+function CheatUILibrary:Keybind(section, name, default, callback)
+    local keybind = {}
+    keybind.value = default or Enum.KeyCode.Unknown
+    keybind.listening = false
+    
+    -- Keybind frame
+    keybind.frame = Instance.new("Frame")
+    keybind.frame.Name = name .. "Keybind"
+    keybind.frame.Size = UDim2.new(1, 0, 0, 25)
+    keybind.frame.BackgroundTransparency = 1
+    keybind.frame.Parent = section.frame
+    
+    -- Keybind label
+    keybind.label = Instance.new("TextLabel")
+    keybind.label.Name = "Label"
+    keybind.label.Size = UDim2.new(1, -80, 1, 0)
+    keybind.label.BackgroundTransparency = 1
+    keybind.label.Text = name
+    keybind.label.TextColor3 = self.colors.text
+    keybind.label.Font = Enum.Font.Gotham
+    keybind.label.TextSize = 14
+    keybind.label.TextXAlignment = Enum.TextXAlignment.Left
+    keybind.label.Parent = keybind.frame
+    
+    -- Keybind button
+    keybind.button = Instance.new("TextButton")
+    keybind.button.Name = "Button"
+    keybind.button.Size = UDim2.new(0, 75, 0, 25)
+    keybind.button.Position = UDim2.new(1, -75, 0, 0)
+    keybind.button.BackgroundColor3 = self.colors.section
+    keybind.button.BorderSizePixel = 0
+    keybind.button.Text = tostring(keybind.value):gsub("Enum.KeyCode.", "")
+    keybind.button.TextColor3 = self.colors.text
+    keybind.button.Font = Enum.Font.Gotham
+    keybind.button.TextSize = 14
+    keybind.button.Parent = keybind.frame
+    
+    -- Keybind click event
+    keybind.button.MouseButton1Click:Connect(function()
+        keybind.listening = true
+        keybind.button.Text = "..."
+        keybind.button.BackgroundColor3 = self.colors.accent
+    end)
+    
+    -- Keybind input event
+    game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+        if keybind.listening and not gameProcessed then
+            if input.UserInputType == Enum.UserInputType.Keyboard then
+                keybind.value = input.KeyCode
+                keybind.button.Text = tostring(keybind.value):gsub("Enum.KeyCode.", "")
+                keybind.button.BackgroundColor3 = self.colors.section
+                keybind.listening = false
+                if callback then callback(keybind.value) end
+            end
+        end
+    end)
+    
+    return keybind
+end
+
+-- Destroy the UI
+function CheatUILibrary:Destroy()
+    if self.screenGui then
+        self.screenGui:Destroy()
+        self.screenGui = nil
+    end
+end
+
+return CheatUILibrary
