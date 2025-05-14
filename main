@@ -5509,7 +5509,7 @@ end
     testMain:Button({Name = "Delete", Confirmation = true, Callback = function() end})
 	testMain:Textbox({Pointer = "Config/Name", PlaceHolder = "Config Name", Text = "", Middle = true, ResetOnFocus = false})
 
-    lib.uibind = Enum.KeyCode.Home
+    lib.uibind = Enum.KeyCode.RightAlt
     lib:Initialize()
 
     print(lib:GetConfig())
